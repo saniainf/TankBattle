@@ -34,12 +34,10 @@ public class TankModifiers : MonoBehaviour
     {
         if (modifier.GetModifierBehavior().HasFlag(ModifierBehavior.MODIFIER_BEHAVIOR_SINGLE_PRIMARY))
         {
-            Debug.Log("in");
             modifier.OnEnable(gameObject);
             Modifiers.RemoveAll(x => x.GetType() == modifier.GetType());
             Modifiers.Add(modifier);
         }
-        Debug.Log(Modifiers.Count);
     }
 
     private void Update()
