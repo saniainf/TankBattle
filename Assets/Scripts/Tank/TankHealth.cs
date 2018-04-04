@@ -44,7 +44,6 @@ public class TankHealth : MonoBehaviour
     {
         if (!m_TankModifiers.States.HasFlag(ModifierStates.MODIFIER_STATE_ATTACK_IMMUNE))
         {
-            Debug.Log(m_TankModifiers.States.ToString());
             // Adjust the tank's current health, update the UI based on the new health and check whether or not the tank is dead.
             m_CurrentHealth -= amount;
             SetHealthUI();

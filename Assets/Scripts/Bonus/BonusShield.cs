@@ -11,6 +11,7 @@ public class BonusShield : MonoBehaviour
         if (m_TankModifier = other.gameObject.GetComponent<TankModifiers>())
         {
             m_TankModifier.AddModifier(new ModifierShield());
+            gameObject.SetActive(false);
         }
     }
 }
