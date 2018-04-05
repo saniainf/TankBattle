@@ -15,7 +15,7 @@ public class TankHealth : MonoBehaviour
     private AudioSource m_ExplosionAudio;
     private ParticleSystem m_ExplosionParticles;
     private Transform m_ExplosionTransform;
-    private TankModifiers m_TankModifiers;
+    private ModifiersManager m_TankModifiers;
     private bool m_Dead;
     private Transform m_transform;
 
@@ -26,7 +26,7 @@ public class TankHealth : MonoBehaviour
         m_ExplosionAudio = m_ExplosionParticles.gameObject.GetComponent<AudioSource>();
         m_ExplosionTransform = m_ExplosionParticles.gameObject.GetComponent<Transform>();
         m_transform = gameObject.GetComponent<Transform>();
-        m_TankModifiers = gameObject.GetComponent<TankModifiers>();
+        m_TankModifiers = gameObject.GetComponent<ModifiersManager>();
         m_ExplosionParticles.gameObject.SetActive(false);
     }
 

@@ -2,24 +2,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-abstract class Modifier
+abstract public class Modifier
 {
     public bool ImDone;
 
-    protected ModifierBehavior behavior;
+    protected ModifierAttribute attribute;
     protected ModifierStates states;
 
-    public void OnEnable(GameObject gameObject) { }
-    public void Update() { }
-    public void OnDisable() { }
+    virtual public void OnEnable(GameObject gameObject) { }
+    virtual public void Update() { }
+    virtual public void OnDisable() { }
 
-    public ModifierStates GetModifierStates()
+    virtual public ModifierStates GetModifierStates()
     {
-        return ModifierStates.MODIFIER_STATE_NONE;
+        return states;
     }
 
-    public ModifierBehavior GetModifierBehavior()
+    virtual public ModifierAttribute GetModifierBehavior()
     {
-        return ModifierBehavior.MODIFIER_BEHAVIOR_NONE;
+        return attribute;
     }
 }

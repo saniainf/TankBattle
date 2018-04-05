@@ -12,27 +12,27 @@ public enum ModifierStates
 }
 
 [Flags]
-public enum ModifierBehavior
+public enum ModifierAttribute
 {
-    MODIFIER_BEHAVIOR_NONE = 1 << 0,
-    MODIFIER_BEHAVIOR_SINGLE_PRIMARY = 1 << 1,
-    MODIFIER_BEHAVIOR_SINGLE_SECONDARY = 1 << 2
+    MODIFIER_ATTRIBUTE_NONE = 1 << 0,
+    MODIFIER_ATTRIBUTE_SINGLE_PRIMARY = 1 << 1,
+    MODIFIER_ATTRIBUTE_SINGLE_SECONDARY = 1 << 2
 }
 
-public class TankModifiers : MonoBehaviour
+public class ModifiersManager : MonoBehaviour
 {
-    public ModifierStates States = new ModifierStates();
+    [HideInInspector]public ModifierStates States = new ModifierStates();
 
-    public List<IModifier> Modifiers;
+    public List<Modifier> Modifiers;
 
     private void OnEnable()
     {
-        Modifiers = new List<IModifier>(20);
+        Modifiers = new List<Modifier>(20);
     }
 
-    public void AddModifier(IModifier modifier)
+    public void AddModifier(Modifier modifier)
     {
-        if (modifier.GetModifierBehavior().HasFlag(ModifierBehavior.MODIFIER_BEHAVIOR_SINGLE_PRIMARY))
+        if (modifier.GetModifierBehavior().HasFlag(ModifierAttribute.MODIFIER_ATTRIBUTE_SINGLE_PRIMARY))
         {
             modifier.OnEnable(gameObject);
             Modifiers.RemoveAll(x => x.GetType() == modifier.GetType());
@@ -55,7 +55,7 @@ public class TankModifiers : MonoBehaviour
 
         // заполнение States для танка перебором всех модификаторов в Modifiers
         States = new ModifierStates();
-        foreach (IModifier modifier in Modifiers)
+        foreach (Modifier modifier in Modifiers)
         {
             if (modifier.GetModifierStates().HasFlag(ModifierStates.MODIFIER_STATE_ATTACK_IMMUNE) && !States.HasFlag(ModifierStates.MODIFIER_STATE_ATTACK_IMMUNE))
                 States |= ModifierStates.MODIFIER_STATE_ATTACK_IMMUNE;

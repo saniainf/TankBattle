@@ -9,5 +9,5 @@ public interface IModifier
     void Update();
     void OnDisable();
     ModifierStates GetModifierStates();
-    ModifierBehavior GetModifierBehavior();
+    ModifierAttribute GetModifierBehavior();
 }
