@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 
-public class TankShooting : MonoBehaviour
+public class StandartTurret : MonoBehaviour
 {
     public int m_PlayerNumber = 1;
     public Rigidbody m_Shell;

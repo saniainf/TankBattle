@@ -13,7 +13,7 @@ public class BonusSpawner : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        m_BonusShield = Instantiate(bonuses, bonuses.transform.position, bonuses.transform.rotation);
+        m_BonusShield = Instantiate(bonuses, new Vector3(transform.position.x, bonuses.transform.position.y, transform.position.z), bonuses.transform.rotation);
     }
 
     // Update is called once per frame

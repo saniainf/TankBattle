@@ -10,8 +10,6 @@ public class UIManager : MonoBehaviour
     private GameManager gameManager;
     private HandlerPlayerUI playerUI;
 
-    bool ok;
-
     // Use this for initialization
     void Start()
     {
@@ -30,6 +28,5 @@ public class UIManager : MonoBehaviour
     public void SetTanks(TankManager[] tankManager)
     {
         playerUI = tankManager[0].m_Instance.GetComponent<HandlerPlayerUI>();
-        ok = true;
     }
 }

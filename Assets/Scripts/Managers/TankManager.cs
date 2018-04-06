@@ -13,14 +13,14 @@ public class TankManager
 
 
     private TankMovement m_Movement;
-    private TankShooting m_Shooting;
+    private StandartTurret m_Shooting;
     private GameObject m_CanvasGameObject;
 
 
     public void Setup()
     {
         m_Movement = m_Instance.GetComponent<TankMovement>();
-        m_Shooting = m_Instance.GetComponent<TankShooting>();
+        m_Shooting = m_Instance.GetComponentInChildren<StandartTurret>();
         m_CanvasGameObject = m_Instance.GetComponentInChildren<Canvas>().gameObject;
 
         m_Movement.m_PlayerNumber = m_PlayerNumber;
