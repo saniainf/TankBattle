@@ -4,29 +4,29 @@ using UnityEngine;
 
 public class BonusSpawner : MonoBehaviour
 {
-    public GameObject bonuses;
+    public GameObject BonusPrefab;
 
-    private GameObject m_BonusShield;
+    private GameObject bonus;
 
     private float timer = 3.0f;
 
     // Use this for initialization
     void Start()
     {
-        m_BonusShield = Instantiate(bonuses, new Vector3(transform.position.x, bonuses.transform.position.y, transform.position.z), bonuses.transform.rotation);
+        bonus = Instantiate(BonusPrefab, new Vector3(transform.position.x, BonusPrefab.transform.position.y, transform.position.z), BonusPrefab.transform.rotation);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!m_BonusShield.activeSelf)
+        if (!bonus.activeSelf)
         {
             timer -= Time.deltaTime;
         }
 
         if (timer < 0)
         {
-            m_BonusShield.SetActive(true);
+            bonus.SetActive(true);
             timer = 3.0f;
         }
     }
