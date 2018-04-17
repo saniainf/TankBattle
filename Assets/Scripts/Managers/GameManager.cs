@@ -19,12 +19,8 @@ public class GameManager : MonoBehaviour
     private TankManager m_RoundWinner;
     private TankManager m_GameWinner;
 
-    private UIManager m_UIManager;
-
     private void Start()
     {
-        m_UIManager = gameObject.GetComponent<UIManager>();
-
         m_StartWait = new WaitForSeconds(m_StartDelay);
         m_EndWait = new WaitForSeconds(m_EndDelay);
 
@@ -44,8 +40,6 @@ public class GameManager : MonoBehaviour
             m_Tanks[i].m_PlayerNumber = i + 1;
             m_Tanks[i].Setup();
         }
-
-        m_UIManager.SetTanks(m_Tanks);
     }
 
 

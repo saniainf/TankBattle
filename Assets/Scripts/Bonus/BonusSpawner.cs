@@ -2,32 +2,59 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BonusSpawner : MonoBehaviour
+namespace TankBattle
 {
-    public GameObject BonusPrefab;
-
-    private GameObject bonus;
-
-    private float timer = 3.0f;
-
-    // Use this for initialization
-    void Start()
+    public class BonusSpawner : MonoBehaviour
     {
-        bonus = Instantiate(BonusPrefab, new Vector3(transform.position.x, BonusPrefab.transform.position.y, transform.position.z), BonusPrefab.transform.rotation);
-    }
+        public GameObject BonusPrefab;
+        public GameObject BonusModel;
+        public float ReloatTimer = 3.0f;
+        public float TransformY = 0.3f;
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (!bonus.activeSelf)
+        private GameObject bonus;
+        private float timer;
+        private bool reload;
+
+        // Use this for initialization
+        void Start()
         {
-            timer -= Time.deltaTime;
+            bonus = Instantiate(BonusModel, new Vector3(transform.position.x, transform.position.y + TransformY, transform.position.z), transform.rotation, transform);
+            reload = false;
         }
 
-        if (timer < 0)
+        // Update is called once per frame
+        void Update()
         {
-            bonus.SetActive(true);
-            timer = 3.0f;
+            if (reload)
+                timer -= Time.deltaTime;
+            if (timer < 0)
+            {
+                bonus.SetActive(true);
+                reload = false;
+                timer = ReloatTimer;
+            }
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            //ModifiersManager m_TankModifier;
+
+            //if (m_TankModifier = other.gameObject.GetComponent<ModifiersManager>())
+            //{
+            //    m_TankModifier.AddModifier(new ModifierShield());
+            //    gameObject.SetActive(false);
+            //}
+
+            if (!reload)
+            {
+                PlayerHandler playerHandler;
+                if (playerHandler = other.gameObject.GetComponent<PlayerHandler>())
+                {
+                    bonus.SetActive(false);
+                    reload = true;
+                    playerHandler.SetWeapon(BonusPrefab);
+                }
+            }
         }
     }
 }

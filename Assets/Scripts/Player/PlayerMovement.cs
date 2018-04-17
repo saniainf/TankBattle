@@ -10,12 +10,6 @@ namespace TankBattle
         private Transform playerTransform;
         private Rigidbody playerRigidbody;
 
-        private string movementAxisName;
-        private string turnAxisName;
-
-        private float movementInputValue;
-        private float turnInputValue;
-
         private void Awake()
         {
             playerAttributes = gameObject.GetComponent<PlayerAttributes>();
@@ -23,46 +17,17 @@ namespace TankBattle
             playerRigidbody = gameObject.GetComponent<Rigidbody>();
         }
 
-        private void OnEnable()
-        {
-            movementInputValue = 0f;
-            turnInputValue = 0f;
-            playerRigidbody.isKinematic = false;
-        }
-
-        void Start()
-        {
-            movementAxisName = "Vertical" + playerAttributes.PlayerNumber;
-            turnAxisName = "Horizontal" + playerAttributes.PlayerNumber;
-        }
-
-        private void FixedUpdate()
+        public void MovePlayer(float power)
         {
             // TODO заменить реализацию на чтото более вменяемое
-            MovePlayer();
-            TurnPlayer();
-        }
-
-        void Update()
-        {
-            movementInputValue = Input.GetAxis(movementAxisName);
-            turnInputValue = Input.GetAxis(turnAxisName);
-        }
-
-        private void OnDisable()
-        {
-            playerRigidbody.isKinematic = true;
-        }
-
-        private void MovePlayer()
-        {
-            Vector3 movement = playerTransform.forward * movementInputValue * playerAttributes.PlayerCurrentSpeed * Time.fixedDeltaTime;
+            Vector3 movement = playerTransform.forward * power * playerAttributes.PlayerCurrentSpeed * Time.fixedDeltaTime;
             playerRigidbody.MovePosition(playerRigidbody.position + movement);
         }
 
-        private void TurnPlayer()
+        public void TurnPlayer(float power)
         {
-            float turn = turnInputValue * playerAttributes.PlayerCurrentTurnSpeed * Time.fixedDeltaTime;
+            // TODO заменить реализацию на чтото более вменяемое
+            float turn = power * playerAttributes.PlayerCurrentTurnSpeed * Time.fixedDeltaTime;
             Quaternion turnRotation = Quaternion.Euler(0f, turn, 0f);
             playerRigidbody.MoveRotation(playerRigidbody.rotation * turnRotation);
         }

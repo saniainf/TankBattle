@@ -12,25 +12,16 @@ public class TankManager
     [HideInInspector] public GameObject m_Instance;
     [HideInInspector] public int m_Wins;
 
-
-    //private TankMovement m_Movement;
-    //private StandartTurret m_Shooting;
-    //private GameObject m_CanvasGameObject;
     private PlayerHandler m_PlayerHandler;
     private PlayerAttributes m_PlayerAttributes;
 
     public void Setup()
     {
-        //m_Movement = m_Instance.GetComponent<TankMovement>();
-        //m_Shooting = m_Instance.GetComponentInChildren<StandartTurret>();
-        //m_CanvasGameObject = m_Instance.GetComponentInChildren<Canvas>().gameObject;
-
-        //m_Movement.m_PlayerNumber = m_PlayerNumber;
-        //m_Shooting.m_PlayerNumber = m_PlayerNumber;
         m_PlayerHandler = m_Instance.GetComponent<PlayerHandler>();
         m_PlayerAttributes = m_Instance.GetComponent<PlayerAttributes>();
 
         m_PlayerAttributes.PlayerNumber = m_PlayerNumber;
+        m_PlayerAttributes.PlayerColor = m_PlayerColor;
 
         m_ColoredPlayerText = "<color=#" + ColorUtility.ToHtmlStringRGB(m_PlayerColor) + ">PLAYER " + m_PlayerNumber + "</color>";
 
@@ -42,23 +33,14 @@ public class TankManager
         }
     }
 
-
     public void DisableControl()
     {
-        //m_Movement.enabled = false;
-        //m_Shooting.enabled = false;
-
-        //m_CanvasGameObject.SetActive(false);
         m_PlayerHandler.DisablePlayer();
     }
 
 
     public void EnableControl()
     {
-        //m_Movement.enabled = true;
-        //m_Shooting.enabled = true;
-
-        //m_CanvasGameObject.SetActive(true);
         m_PlayerHandler.EnablePlayer();
     }
 
