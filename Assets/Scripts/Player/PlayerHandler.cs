@@ -33,11 +33,12 @@ namespace TankBattle
         void Update()
         {
             SetHealthUI();
+            regenAttributes();
         }
 
         public void ResetPlayer()
         {
-            playerAttributes.PlayerCurrentHealth = playerAttributes.PlayerStartingHealth;
+            playerAttributes.ResetAttributes();
             RemoveWeapon();
         }
 
@@ -62,17 +63,29 @@ namespace TankBattle
 
             currentWeapon = Instantiate(weaponPrefab, weaponTransform);
 
-            MeshRenderer[] renderers = currentWeapon.GetComponents<MeshRenderer>();
+            IWeapon weapon = currentWeapon.GetComponent<IWeapon>();
+            weapon.playerHandler = this;
 
+            MeshRenderer[] renderers = currentWeapon.GetComponents<MeshRenderer>();
             for (int i = 0; i < renderers.Length; i++)
             {
                 renderers[i].material.color = playerAttributes.PlayerColor;
             }
 
-            playerInputController.playerWeapon = currentWeapon.GetComponent<IWeapon>();
+            playerInputController.playerWeapon = weapon;
+        }
+
+        public void RemoveWeapon()
+        {
+            SetWeapon(EmptyWeapon);
         }
 
         public void SetAbillity()
+        {
+
+        }
+
+        public void GetAbillity()
         {
 
         }
@@ -82,15 +95,55 @@ namespace TankBattle
 
         }
 
-        public void RemoveWeapon()
+        public void GetModificator()
         {
-            SetWeapon(EmptyWeapon);
+
+        }
+
+        public void SetHealth(float hp)
+        {
+            playerAttributes.PlayerCurrentHealth = Mathf.Clamp(playerAttributes.PlayerCurrentHealth += hp, 0, playerAttributes.PlayerMaxHealth);
+            if (playerAttributes.PlayerCurrentHealth <= 0)
+            {
+                OnDeath();
+            }
+        }
+
+        public float GetHealth()
+        {
+            return playerAttributes.PlayerCurrentHealth;
+        }
+
+        public void TakeDamage(float damage)
+        {
+            SetHealth(-damage);
+        }
+
+        public void SetEnergy(float energy)
+        {
+            playerAttributes.PlayerCurrentEnergy = Mathf.Clamp(playerAttributes.PlayerCurrentEnergy += energy, 0, playerAttributes.PlayerMaxEnergy);
+        }
+
+        public float GetEnergy()
+        {
+            return playerAttributes.PlayerCurrentEnergy;
         }
 
         private void SetHealthUI()
         {
-            healthSlider.value = (playerAttributes.PlayerCurrentHealth / playerAttributes.PlayerStartingHealth) * 100f;
-            healthSliderImage.color = Color.Lerp(zeroHealthColor, fullHealthColor, playerAttributes.PlayerCurrentHealth / playerAttributes.PlayerStartingHealth);
+            healthSlider.value = (playerAttributes.PlayerCurrentHealth / playerAttributes.PlayerMaxHealth) * 100f;
+            healthSliderImage.color = Color.Lerp(zeroHealthColor, fullHealthColor, playerAttributes.PlayerCurrentHealth / playerAttributes.PlayerMaxHealth);
+        }
+
+        private void regenAttributes()
+        {
+            playerAttributes.PlayerCurrentHealth = Mathf.Min((playerAttributes.PlayerCurrentHealth + (playerAttributes.PlayerCurrentRegenHealth * Time.deltaTime)), playerAttributes.PlayerMaxHealth);
+            playerAttributes.PlayerCurrentEnergy = Mathf.Min((playerAttributes.PlayerCurrentEnergy + (playerAttributes.PlayerCurrentRegenEnergy * Time.deltaTime)), playerAttributes.PlayerMaxEnergy);
+        }
+
+        private void OnDeath()
+        {
+
         }
     }
 }

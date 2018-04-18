@@ -8,30 +8,40 @@ namespace TankBattle
     {
         public GameObject BonusPrefab;
         public GameObject BonusModel;
-        public float ReloatTimer = 3.0f;
+        public float ReloadTimer = 3.0f;
         public float TransformY = 0.3f;
+        public float TurnSpeed = 1.0f;
 
         private GameObject bonus;
         private float timer;
         private bool reload;
+
 
         // Use this for initialization
         void Start()
         {
             bonus = Instantiate(BonusModel, new Vector3(transform.position.x, transform.position.y + TransformY, transform.position.z), transform.rotation, transform);
             reload = false;
+            timer = ReloadTimer;
         }
 
         // Update is called once per frame
         void Update()
         {
             if (reload)
-                timer -= Time.deltaTime;
-            if (timer < 0)
             {
-                bonus.SetActive(true);
-                reload = false;
-                timer = ReloatTimer;
+                timer -= Time.deltaTime;
+                if (timer < 0)
+                {
+                    bonus.SetActive(true);
+                    reload = false;
+                    timer = ReloadTimer;
+                }
+            }
+            else
+            {
+                Quaternion turnRotation = Quaternion.Euler(0, TurnSpeed, 0);
+                bonus.transform.rotation = bonus.transform.rotation * turnRotation;
             }
         }
 
