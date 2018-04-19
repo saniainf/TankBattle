@@ -15,6 +15,7 @@ namespace TankBattle
         public float EnergyCost = 3f;
         public float LaunchForce = 30f;
 
+        private Rigidbody PlayerRigidbody;
         private bool reload;
         private float reloadTime;
 
@@ -40,6 +41,7 @@ namespace TankBattle
         void Start()
         {
             reload = false;
+            PlayerRigidbody = playerHandler.gameObject.GetComponent<Rigidbody>();
         }
 
         void Update()
@@ -56,8 +58,16 @@ namespace TankBattle
         private void Fire()
         {
             Rigidbody shellInstance = Instantiate(Projectile, FireTransform.position, FireTransform.rotation) as Rigidbody;
-            shellInstance.velocity = LaunchForce * FireTransform.forward;
 
+            var fwdSpeed = Vector3.Dot(PlayerRigidbody.velocity, transform.forward);
+            if (fwdSpeed > 0)
+            {
+                shellInstance.velocity = (LaunchForce * FireTransform.forward) + PlayerRigidbody.velocity;
+            }
+            else
+            {
+                shellInstance.velocity = (LaunchForce * FireTransform.forward);
+            }
             reload = true;
         }
     }
