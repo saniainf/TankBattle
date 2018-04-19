@@ -45,7 +45,7 @@ namespace TankBattle
             }
         }
 
-        private void OnTriggerEnter(Collider other)
+        private void OnTriggerStay(Collider other)
         {
             //ModifiersManager m_TankModifier;
 

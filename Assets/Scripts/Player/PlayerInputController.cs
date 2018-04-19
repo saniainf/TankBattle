@@ -38,13 +38,16 @@ namespace TankBattle
             fireButton = "Fire" + playerAttributes.PlayerNumber;
         }
 
-        void Update()
+        private void FixedUpdate()
         {
             movementInputValue = Input.GetAxis(movementAxisName);
             turnInputValue = Input.GetAxis(turnAxisName);
             playerMovement.MovePlayer(movementInputValue);
             playerMovement.TurnPlayer(turnInputValue);
+        }
 
+        void Update()
+        {
             if (Input.GetButtonDown(fireButton))
             {
                 playerWeapon.FireButtonPress();

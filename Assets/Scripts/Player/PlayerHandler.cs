@@ -103,7 +103,7 @@ namespace TankBattle
         public void SetHealth(float hp)
         {
             playerAttributes.PlayerCurrentHealth = Mathf.Clamp(playerAttributes.PlayerCurrentHealth += hp, 0, playerAttributes.PlayerMaxHealth);
-            if (playerAttributes.PlayerCurrentHealth <= 0)
+            if (playerAttributes.PlayerCurrentHealth <= 0 && !playerAttributes.PlayerDeath)
             {
                 OnDeath();
             }
@@ -143,7 +143,8 @@ namespace TankBattle
 
         private void OnDeath()
         {
-
+            playerAttributes.PlayerDeath = true;
+            gameObject.SetActive(false);
         }
     }
 }

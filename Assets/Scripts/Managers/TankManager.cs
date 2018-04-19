@@ -2,57 +2,59 @@
 using UnityEngine;
 using TankBattle;
 
-[Serializable]
-public class TankManager
+namespace TankBattle
 {
-    public Color m_PlayerColor;
-    public Transform m_SpawnPoint;
-    [HideInInspector] public int m_PlayerNumber;
-    [HideInInspector] public string m_ColoredPlayerText;
-    [HideInInspector] public GameObject m_Instance;
-    [HideInInspector] public int m_Wins;
-
-    private PlayerHandler m_PlayerHandler;
-    private PlayerAttributes m_PlayerAttributes;
-
-    public void Setup()
+    [Serializable]
+    public class TankManager
     {
-        m_PlayerHandler = m_Instance.GetComponent<PlayerHandler>();
-        m_PlayerAttributes = m_Instance.GetComponent<PlayerAttributes>();
+        public Color m_PlayerColor;
+        public Transform m_SpawnPoint;
+        [HideInInspector] public int m_PlayerNumber;
+        [HideInInspector] public string m_ColoredPlayerText;
+        [HideInInspector] public GameObject m_Instance;
+        [HideInInspector] public int m_Wins;
+        [HideInInspector] public PlayerHandler m_PlayerHandler;
+        [HideInInspector] public PlayerAttributes m_PlayerAttributes;
 
-        m_PlayerAttributes.PlayerNumber = m_PlayerNumber;
-        m_PlayerAttributes.PlayerColor = m_PlayerColor;
-
-        m_ColoredPlayerText = "<color=#" + ColorUtility.ToHtmlStringRGB(m_PlayerColor) + ">PLAYER " + m_PlayerNumber + "</color>";
-
-        MeshRenderer[] renderers = m_Instance.GetComponentsInChildren<MeshRenderer>();
-
-        for (int i = 0; i < renderers.Length; i++)
+        public void Setup()
         {
-            renderers[i].material.color = m_PlayerColor;
+            m_PlayerHandler = m_Instance.GetComponent<PlayerHandler>();
+            m_PlayerAttributes = m_Instance.GetComponent<PlayerAttributes>();
+
+            m_PlayerAttributes.PlayerNumber = m_PlayerNumber;
+            m_PlayerAttributes.PlayerColor = m_PlayerColor;
+
+            m_ColoredPlayerText = "<color=#" + ColorUtility.ToHtmlStringRGB(m_PlayerColor) + ">PLAYER " + m_PlayerNumber + "</color>";
+
+            MeshRenderer[] renderers = m_Instance.GetComponentsInChildren<MeshRenderer>();
+
+            for (int i = 0; i < renderers.Length; i++)
+            {
+                renderers[i].material.color = m_PlayerColor;
+            }
         }
-    }
 
-    public void DisableControl()
-    {
-        m_PlayerHandler.DisablePlayer();
-    }
-
-
-    public void EnableControl()
-    {
-        m_PlayerHandler.EnablePlayer();
-    }
+        public void DisableControl()
+        {
+            m_PlayerHandler.DisablePlayer();
+        }
 
 
-    public void Reset()
-    {
-        m_PlayerHandler.ResetPlayer();
+        public void EnableControl()
+        {
+            m_PlayerHandler.EnablePlayer();
+        }
 
-        m_Instance.transform.position = m_SpawnPoint.position;
-        m_Instance.transform.rotation = m_SpawnPoint.rotation;
 
-        m_Instance.SetActive(false);
-        m_Instance.SetActive(true);
+        public void Reset()
+        {
+            m_PlayerHandler.ResetPlayer();
+
+            m_Instance.transform.position = m_SpawnPoint.position;
+            m_Instance.transform.rotation = m_SpawnPoint.rotation;
+
+            m_Instance.SetActive(false);
+            m_Instance.SetActive(true);
+        }
     }
 }

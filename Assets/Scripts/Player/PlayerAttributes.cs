@@ -9,6 +9,8 @@ namespace TankBattle
         public int PlayerNumber = 1;
         public Color PlayerColor = Color.gray;
 
+        [HideInInspector]public bool PlayerDeath = false;
+
         public float PlayerStartingSpeed = 12f;
         [HideInInspector] public float PlayerMaxSpeed;
         [HideInInspector] public float PlayerCurrentSpeed;
@@ -35,6 +37,8 @@ namespace TankBattle
 
         public void ResetAttributes()
         {
+            PlayerDeath = false;
+
             PlayerMaxSpeed = PlayerStartingSpeed;
             PlayerCurrentSpeed = PlayerStartingSpeed;
 
