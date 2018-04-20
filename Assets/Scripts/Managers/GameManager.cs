@@ -56,7 +56,7 @@ namespace TankBattle
                 targets[i] = m_Tanks[i].m_Instance.GetComponent<Transform>();
             }
 
-            m_CameraControl.m_Targets = targets;
+            m_CameraControl.Targets = targets;
         }
 
 

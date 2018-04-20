@@ -1,104 +1,107 @@
 ﻿using UnityEngine;
 
-public class CameraControl : MonoBehaviour
+namespace TankBattle
 {
-    public float m_DampTime = 0.2f;                 
-    public float m_ScreenEdgeBuffer = 4f;           
-    public float m_MinSize = 6.5f;
-    [HideInInspector] public Transform[] m_Targets; 
-
-
-    private Camera m_Camera;                        
-    private float m_ZoomSpeed;                      
-    private Vector3 m_MoveVelocity;                 
-    private Vector3 m_DesiredPosition;              
-
-
-    private void Awake()
+    public class CameraControl : MonoBehaviour
     {
-        m_Camera = GetComponentInChildren<Camera>();
-    }
+        public float DampTime = 0.2f;
+        public float ScreenEdgeBuffer = 8f;
+        public float MinSize = 6.5f;
+        [HideInInspector] public Transform[] Targets;
 
 
-    private void FixedUpdate()
-    {
-        Move();
-        Zoom();
-    }
+        private Camera sceneCamera;
+        private float zoomSpeed;
+        private Vector3 moveVelocity;
+        private Vector3 desiredPosition;
 
 
-    private void Move()
-    {
-        FindAveragePosition();
-
-        transform.position = Vector3.SmoothDamp(transform.position, m_DesiredPosition, ref m_MoveVelocity, m_DampTime);
-    }
-
-
-    private void FindAveragePosition()
-    {
-        Vector3 averagePos = new Vector3();
-        int numTargets = 0;
-
-        for (int i = 0; i < m_Targets.Length; i++)
+        private void Awake()
         {
-            if (!m_Targets[i].gameObject.activeSelf)
-                continue;
-
-            averagePos += m_Targets[i].position;
-            numTargets++;
+            sceneCamera = GetComponentInChildren<Camera>();
         }
 
-        if (numTargets > 0)
-            averagePos /= numTargets;
 
-        averagePos.y = transform.position.y;
-
-        m_DesiredPosition = averagePos;
-    }
-
-
-    private void Zoom()
-    {
-        float requiredSize = FindRequiredSize();
-        m_Camera.orthographicSize = Mathf.SmoothDamp(m_Camera.orthographicSize, requiredSize, ref m_ZoomSpeed, m_DampTime);
-    }
-
-
-    private float FindRequiredSize()
-    {
-        Vector3 desiredLocalPos = transform.InverseTransformPoint(m_DesiredPosition);
-
-        float size = 0f;
-
-        for (int i = 0; i < m_Targets.Length; i++)
+        private void FixedUpdate()
         {
-            if (!m_Targets[i].gameObject.activeSelf)
-                continue;
-
-            Vector3 targetLocalPos = transform.InverseTransformPoint(m_Targets[i].position);
-
-            Vector3 desiredPosToTarget = targetLocalPos - desiredLocalPos;
-
-            size = Mathf.Max (size, Mathf.Abs (desiredPosToTarget.y));
-
-            size = Mathf.Max (size, Mathf.Abs (desiredPosToTarget.x) / m_Camera.aspect);
+            Move();
+            Zoom();
         }
-        
-        size += m_ScreenEdgeBuffer;
-
-        size = Mathf.Max(size, m_MinSize);
-
-        return size;
-    }
 
 
-    public void SetStartPositionAndSize()
-    {
-        FindAveragePosition();
+        private void Move()
+        {
+            FindAveragePosition();
 
-        transform.position = m_DesiredPosition;
+            transform.position = Vector3.SmoothDamp(transform.position, desiredPosition, ref moveVelocity, DampTime);
+        }
 
-        m_Camera.orthographicSize = FindRequiredSize();
+
+        private void FindAveragePosition()
+        {
+            Vector3 averagePos = new Vector3();
+            int numTargets = 0;
+
+            for (int i = 0; i < Targets.Length; i++)
+            {
+                if (!Targets[i].gameObject.activeSelf)
+                    continue;
+
+                averagePos += Targets[i].position;
+                numTargets++;
+            }
+
+            if (numTargets > 0)
+                averagePos /= numTargets;
+
+            averagePos.y = transform.position.y;
+
+            desiredPosition = averagePos;
+        }
+
+
+        private void Zoom()
+        {
+            float requiredSize = FindRequiredSize();
+            sceneCamera.orthographicSize = Mathf.SmoothDamp(sceneCamera.orthographicSize, requiredSize, ref zoomSpeed, DampTime);
+        }
+
+
+        private float FindRequiredSize()
+        {
+            Vector3 desiredLocalPos = transform.InverseTransformPoint(desiredPosition);
+
+            float size = 0f;
+
+            for (int i = 0; i < Targets.Length; i++)
+            {
+                if (!Targets[i].gameObject.activeSelf)
+                    continue;
+
+                Vector3 targetLocalPos = transform.InverseTransformPoint(Targets[i].position);
+
+                Vector3 desiredPosToTarget = targetLocalPos - desiredLocalPos;
+
+                size = Mathf.Max(size, Mathf.Abs(desiredPosToTarget.y));
+
+                size = Mathf.Max(size, Mathf.Abs(desiredPosToTarget.x) / sceneCamera.aspect);
+            }
+
+            size += ScreenEdgeBuffer;
+
+            size = Mathf.Max(size, MinSize);
+
+            return size;
+        }
+
+
+        public void SetStartPositionAndSize()
+        {
+            FindAveragePosition();
+
+            transform.position = desiredPosition;
+
+            sceneCamera.orthographicSize = FindRequiredSize();
+        }
     }
 }
