@@ -6,7 +6,7 @@ namespace TankBattle
 {
     public class GunTurretWeapon : MonoBehaviour, IWeapon
     {
-        [HideInInspector]public PlayerHandler playerHandler { get; set; }
+        [HideInInspector] public PlayerHandler playerHandler { get; set; }
 
         public Rigidbody Projectile;
         public Transform FireTransform;
@@ -15,7 +15,6 @@ namespace TankBattle
         public float EnergyCost = 3f;
         public float LaunchForce = 30f;
 
-        private Rigidbody PlayerRigidbody;
         private bool reload;
         private float reloadTime;
 
@@ -30,7 +29,11 @@ namespace TankBattle
 
         public void FireButtonPress()
         {
-            
+            if (!reload && playerHandler.GetEnergy() >= EnergyCost)
+            {
+                playerHandler.SetEnergy(-EnergyCost);
+                Fire();
+            }
         }
 
         public void FireButtonRelease()
@@ -41,7 +44,7 @@ namespace TankBattle
         void Start()
         {
             reload = false;
-            PlayerRigidbody = playerHandler.gameObject.GetComponent<Rigidbody>();
+            reloadTime = AtackSpeed;
         }
 
         void Update()
@@ -59,15 +62,15 @@ namespace TankBattle
         {
             Rigidbody shellInstance = Instantiate(Projectile, FireTransform.position, FireTransform.rotation) as Rigidbody;
 
-            var fwdSpeed = Vector3.Dot(PlayerRigidbody.velocity, transform.forward);
-            if (fwdSpeed > 0)
+            if (playerHandler.GetPlayerVelocity() > 0)
             {
-                shellInstance.velocity = (LaunchForce * FireTransform.forward) + PlayerRigidbody.velocity;
+                shellInstance.velocity = (LaunchForce + playerHandler.GetPlayerVelocity()) * FireTransform.forward;
             }
             else
             {
-                shellInstance.velocity = (LaunchForce * FireTransform.forward);
+                shellInstance.velocity = LaunchForce * FireTransform.forward;
             }
+
             reload = true;
         }
     }

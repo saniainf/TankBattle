@@ -10,6 +10,8 @@ namespace TankBattle
         private Transform playerTransform;
         private Rigidbody playerRigidbody;
 
+        private Vector3 previousPosition;
+
         private void Awake()
         {
             playerAttributes = gameObject.GetComponent<PlayerAttributes>();
@@ -20,10 +22,11 @@ namespace TankBattle
         public void MovePlayer(float power)
         {
             // TODO заменить реализацию на чтото более вменяемое
-            //Vector3 movement = playerTransform.forward * power * playerAttributes.PlayerCurrentSpeed * Time.fixedDeltaTime;
-            //playerRigidbody.MovePosition(playerRigidbody.position + movement);
+            Vector3 movement = playerTransform.forward * power * playerAttributes.PlayerCurrentSpeed * Time.fixedDeltaTime;
+            playerRigidbody.MovePosition(playerRigidbody.position + movement);
 
-            playerRigidbody.velocity = playerTransform.forward * power * playerAttributes.PlayerCurrentSpeed;
+            playerAttributes.PlayerVelocity = Mathf.Sign(power) * ((playerTransform.position - previousPosition).magnitude / Time.deltaTime);
+            previousPosition = playerTransform.position;
         }
 
         public void TurnPlayer(float power)

@@ -2,24 +2,27 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-abstract public class Modifier
+namespace TankBattle
 {
-    public bool ImDone;
-
-    protected ModifierAttribute attribute;
-    protected ModifierStates states;
-
-    virtual public void OnEnable(GameObject gameObject) { }
-    virtual public void Update() { }
-    virtual public void OnDisable() { }
-
-    virtual public ModifierStates GetModifierStates()
+    abstract public class Modifier
     {
-        return states;
-    }
+        public bool ImDone;
 
-    virtual public ModifierAttribute GetModifierBehavior()
-    {
-        return attribute;
+        protected ModifierAttribute attribute;
+        protected ModifierStates states;
+
+        virtual public void OnEnable(GameObject gameObject) { }
+        virtual public void Update() { }
+        virtual public void OnDisable() { }
+
+        virtual public ModifierStates GetModifierStates()
+        {
+            return states;
+        }
+
+        virtual public ModifierAttribute GetModifierBehavior()
+        {
+            return attribute;
+        }
     }
 }

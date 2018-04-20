@@ -129,6 +129,11 @@ namespace TankBattle
             return playerAttributes.PlayerCurrentEnergy;
         }
 
+        public float GetPlayerVelocity()
+        {
+            return playerAttributes.PlayerVelocity;
+        }
+
         private void SetHealthUI()
         {
             healthSlider.value = (playerAttributes.PlayerCurrentHealth / playerAttributes.PlayerMaxHealth) * 100f;

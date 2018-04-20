@@ -35,6 +35,8 @@ namespace TankBattle
         [HideInInspector] public float PlayerMaxRegenEnergy;
         [HideInInspector] public float PlayerCurrentRegenEnergy;
 
+        [HideInInspector] public float PlayerVelocity;
+
         public void ResetAttributes()
         {
             PlayerDeath = false;
@@ -56,6 +58,8 @@ namespace TankBattle
 
             PlayerMaxRegenEnergy = PlayerStartingRegenEnergy;
             PlayerCurrentRegenEnergy = PlayerStartingRegenEnergy;
+
+            PlayerVelocity = 0f;
         }
     }
 }

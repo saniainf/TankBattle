@@ -23,36 +23,39 @@ namespace TankBattle
 
         private void OnTriggerEnter(Collider other)
         {
-            // Find all the tanks in an area around the shell and damage them.
-            Collider[] colliders = Physics.OverlapSphere(m_transform.position, m_ExplosionRadius, m_TankMask);
-            Rigidbody targetRigitbody;
-            //TankHealth targetHealth;
-            PlayerHandler playerHandler;
-
-            for (int i = 0; i < colliders.Length; i++)
+            if (other.gameObject.layer == 8 || other.gameObject.layer == 9)
             {
-                targetRigitbody = null;
-                playerHandler = null;
+                // Find all the tanks in an area around the shell and damage them.
+                Collider[] colliders = Physics.OverlapSphere(m_transform.position, m_ExplosionRadius, m_TankMask);
+                Rigidbody targetRigitbody;
+                //TankHealth targetHealth;
+                PlayerHandler playerHandler;
 
-                targetRigitbody = colliders[i].gameObject.GetComponent<Rigidbody>();
-                if (!targetRigitbody)
-                    continue;
+                for (int i = 0; i < colliders.Length; i++)
+                {
+                    targetRigitbody = null;
+                    playerHandler = null;
 
-                targetRigitbody.AddExplosionForce(m_ExplosionForce, m_transform.position, m_ExplosionRadius);
+                    targetRigitbody = colliders[i].gameObject.GetComponent<Rigidbody>();
+                    if (!targetRigitbody)
+                        continue;
 
-                playerHandler = targetRigitbody.gameObject.GetComponent<PlayerHandler>();
-                if (!playerHandler)
-                    continue;
+                    targetRigitbody.AddExplosionForce(m_ExplosionForce, m_transform.position, m_ExplosionRadius);
 
-                float damage = CalculateDamage(targetRigitbody.position);
-                playerHandler.TakeDamage(damage);
+                    playerHandler = targetRigitbody.gameObject.GetComponent<PlayerHandler>();
+                    if (!playerHandler)
+                        continue;
+
+                    float damage = CalculateDamage(targetRigitbody.position);
+                    playerHandler.TakeDamage(damage);
+                }
+
+                m_ExplosionParticles.gameObject.transform.parent = null;
+                m_ExplosionParticles.Play();
+                m_ExplosionAudio.Play();
+                Destroy(m_ExplosionParticles.gameObject, m_ExplosionParticles.main.duration);
+                Destroy(gameObject);
             }
-
-            m_ExplosionParticles.gameObject.transform.parent = null;
-            m_ExplosionParticles.Play();
-            m_ExplosionAudio.Play();
-            Destroy(m_ExplosionParticles.gameObject, m_ExplosionParticles.main.duration);
-            Destroy(gameObject);
         }
 
 

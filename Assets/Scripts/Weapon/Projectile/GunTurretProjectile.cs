@@ -25,28 +25,31 @@ namespace TankBattle
 
         private void OnTriggerEnter(Collider other)
         {
-            Rigidbody targetRigitbody;
-            //TankHealth targetHealth;
-            PlayerHandler playerHandler;
-
-            targetRigitbody = other.gameObject.GetComponent<Rigidbody>();
-            if (targetRigitbody)
+            if (other.gameObject.layer == 8 || other.gameObject.layer == 9)
             {
-                targetRigitbody.AddExplosionForce(ExplosionForce, projectileTransform.position, ExplosionRadius);
-            }
+                Rigidbody targetRigitbody;
+                PlayerHandler playerHandler;
 
-            playerHandler = other.gameObject.GetComponent<PlayerHandler>();
-            if (playerHandler)
-            {
-                float damage = Random.Range(MinDamage, MaxDamage);
-                playerHandler.TakeDamage(damage);
-            }
+                targetRigitbody = other.gameObject.GetComponent<Rigidbody>();
+                if (targetRigitbody)
+                {
+                    //targetRigitbody.AddExplosionForce(ExplosionForce, projectileTransform.position, ExplosionRadius);
+                    targetRigitbody.AddForce(projectileTransform.forward * ExplosionForce);
+                }
 
-            ExplosionParticles.gameObject.transform.parent = null;
-            ExplosionParticles.Play();
-            ExplosionAudio.Play();
-            Destroy(ExplosionParticles.gameObject, ExplosionParticles.main.duration);
-            Destroy(gameObject);
+                playerHandler = other.gameObject.GetComponent<PlayerHandler>();
+                if (playerHandler)
+                {
+                    float damage = Random.Range(MinDamage, MaxDamage);
+                    playerHandler.TakeDamage(damage);
+                }
+
+                ExplosionParticles.gameObject.transform.parent = null;
+                ExplosionParticles.Play();
+                ExplosionAudio.Play();
+                Destroy(ExplosionParticles.gameObject, ExplosionParticles.main.duration);
+                Destroy(gameObject);
+            }
         }
     }
 }
