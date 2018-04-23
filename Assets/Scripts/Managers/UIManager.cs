@@ -21,11 +21,9 @@ namespace TankBattle
         void Update()
         {
             PlayerHP[0].text = Mathf.RoundToInt(players[0].PlayerCurrentHealth).ToString();
-            PlayerHP[0].color = players[0].PlayerColor;
             PlayerEnergy[0].text = Mathf.RoundToInt(players[0].PlayerCurrentEnergy).ToString();
 
             PlayerHP[1].text = Mathf.RoundToInt(players[1].PlayerCurrentHealth).ToString();
-            PlayerHP[1].color = players[1].PlayerColor;
             PlayerEnergy[1].text = Mathf.RoundToInt(players[1].PlayerCurrentEnergy).ToString();
         }
 

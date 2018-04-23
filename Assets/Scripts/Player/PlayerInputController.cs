@@ -6,10 +6,9 @@ namespace TankBattle
 {
     public class PlayerInputController : MonoBehaviour
     {
-        public IWeapon playerWeapon;
+        [HideInInspector]public IWeapon m_PlayerWeapon;
 
-        private PlayerAttributes playerAttributes;
-        private PlayerMovement playerMovement;
+        public PlayerHandler m_PlayerHandler;
 
         private string movementAxisName;
         private string turnAxisName;
@@ -19,12 +18,6 @@ namespace TankBattle
 
         private string fireButton;
 
-        private void Awake()
-        {
-            playerAttributes = gameObject.GetComponent<PlayerAttributes>();
-            playerMovement = gameObject.GetComponent<PlayerMovement>();
-        }
-
         private void OnEnable()
         {
             movementInputValue = 0f;
@@ -33,32 +26,32 @@ namespace TankBattle
 
         void Start()
         {
-            movementAxisName = "Vertical" + playerAttributes.PlayerNumber;
-            turnAxisName = "Horizontal" + playerAttributes.PlayerNumber;
-            fireButton = "Fire" + playerAttributes.PlayerNumber;
+            movementAxisName = "Vertical" + m_PlayerHandler.m_Attributes.PlayerNumber;
+            turnAxisName = "Horizontal" + m_PlayerHandler.m_Attributes.PlayerNumber;
+            fireButton = "Fire" + m_PlayerHandler.m_Attributes.PlayerNumber;
         }
 
         private void FixedUpdate()
         {
             movementInputValue = Input.GetAxis(movementAxisName);
             turnInputValue = Input.GetAxis(turnAxisName);
-            playerMovement.MovePlayer(movementInputValue);
-            playerMovement.TurnPlayer(turnInputValue);
+            m_PlayerHandler.m_Movement.MovePlayer(movementInputValue);
+            m_PlayerHandler.m_Movement.TurnPlayer(turnInputValue);
         }
 
         void Update()
         {
             if (Input.GetButtonDown(fireButton))
             {
-                playerWeapon.FireButtonPress();
+                m_PlayerWeapon.FireButtonPress();
             }
             else if (Input.GetButton(fireButton))
             {
-                playerWeapon.FireButtonHold();
+                m_PlayerWeapon.FireButtonHold();
             }
             else if (Input.GetButtonUp(fireButton))
             {
-                playerWeapon.FireButtonRelease();
+                m_PlayerWeapon.FireButtonRelease();
             }
         }
 

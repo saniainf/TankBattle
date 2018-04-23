@@ -6,7 +6,7 @@ namespace TankBattle
 {
     public class EmptyWeapon : MonoBehaviour, IWeapon
     {
-        public PlayerHandler playerHandler { get; set; }
+        public PlayerHandler m_PlayerHandler { get; set; }
 
         public void FireButtonPress() { }
 

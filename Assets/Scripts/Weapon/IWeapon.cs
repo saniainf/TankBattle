@@ -5,7 +5,7 @@ namespace TankBattle
 {
     public interface IWeapon
     {
-        PlayerHandler playerHandler { get; set; }
+        PlayerHandler m_PlayerHandler { get; set; }
 
         void FireButtonPress();
         void FireButtonHold();

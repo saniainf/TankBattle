@@ -6,32 +6,40 @@ namespace TankBattle
 {
     public class GunTurretWeapon : MonoBehaviour, IWeapon
     {
-        [HideInInspector] public PlayerHandler playerHandler { get; set; }
+        [HideInInspector] public PlayerHandler m_PlayerHandler { get; set; }
 
-        public Rigidbody Projectile;
-        public Transform FireTransform;
+        public Transform m_FireTransform;
+        public Rigidbody m_ProjectileRigidbody;
 
-        public float AtackSpeed = 0.2f;
-        public float EnergyCost = 3f;
-        public float LaunchForce = 30f;
+        public float m_AtackSpeed = 0.2f;
+        public float m_EnergyCost = 25f;
+        public float m_LaunchForce = 30f;
 
-        private bool reload;
-        private float reloadTime;
+        private bool reload = false;
+        private float reloadTime = 0f;
 
-        public void FireButtonHold()
+        void Update()
         {
-            if (!reload && playerHandler.GetEnergy() >= EnergyCost)
+            if (reload)
+                reloadTime += Time.deltaTime;
+
+            if (reloadTime > m_AtackSpeed && reload)
             {
-                playerHandler.SetEnergy(-EnergyCost);
-                Fire();
+                reloadTime -= m_AtackSpeed;
+                reload = false;
             }
         }
 
         public void FireButtonPress()
         {
-            if (!reload && playerHandler.GetEnergy() >= EnergyCost)
+
+        }
+
+        public void FireButtonHold()
+        {
+            if (!reload && m_PlayerHandler.GetEnergy() >= m_EnergyCost)
             {
-                playerHandler.SetEnergy(-EnergyCost);
+                m_PlayerHandler.SetEnergy(-m_EnergyCost);
                 Fire();
             }
         }
@@ -41,34 +49,17 @@ namespace TankBattle
 
         }
 
-        void Start()
-        {
-            reload = false;
-            reloadTime = AtackSpeed;
-        }
-
-        void Update()
-        {
-            if (reload)
-                reloadTime -= Time.deltaTime;
-            if (reloadTime < 0)
-            {
-                reloadTime = AtackSpeed;
-                reload = false;
-            }
-        }
-
         private void Fire()
         {
-            Rigidbody shellInstance = Instantiate(Projectile, FireTransform.position, FireTransform.rotation) as Rigidbody;
+            Rigidbody shellInstance = Instantiate(m_ProjectileRigidbody, m_FireTransform.position, m_FireTransform.rotation) as Rigidbody;
 
-            if (playerHandler.GetPlayerVelocity() > 0)
+            if (m_PlayerHandler.GetPlayerVelocity() > 0)
             {
-                shellInstance.velocity = (LaunchForce + playerHandler.GetPlayerVelocity()) * FireTransform.forward;
+                shellInstance.velocity = (m_LaunchForce + m_PlayerHandler.GetPlayerVelocity()) * m_FireTransform.forward;
             }
             else
             {
-                shellInstance.velocity = LaunchForce * FireTransform.forward;
+                shellInstance.velocity = m_LaunchForce * m_FireTransform.forward;
             }
 
             reload = true;

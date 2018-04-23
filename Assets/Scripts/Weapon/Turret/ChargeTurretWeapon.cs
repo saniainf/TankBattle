@@ -7,54 +7,52 @@ namespace TankBattle
 {
     public class ChargeTurretWeapon : MonoBehaviour, IWeapon
     {
-        public Rigidbody Projectile;
-        public Transform FireTransform;
-        public Slider AimSlider;
+        public Transform m_FireTransform;
+        public Rigidbody m_ProjectileRigidbody;
+        public Slider m_ChargeSlider;
 
-        public float MinLaunchForce = 15f;
-        public float MaxLaunchForce = 30f;
-        public float MaxChargeTime = 0.75f;
-        public float AtackSpeed = 0.5f;
-        public float EnergyCost = 10f;
+        public float m_MinLaunchForce = 15f;
+        public float m_MaxLaunchForce = 30f;
+        public float m_MaxChargeTime = 0.75f;
+        public float m_AtackSpeed = 0.5f;
+        public float m_EnergyCost = 10f;
 
-        [HideInInspector] public PlayerHandler playerHandler { get; set; }
+        [HideInInspector] public PlayerHandler m_PlayerHandler { get; set; }
 
-        private bool charge;
-        private bool reload;
+        private bool charge = false;
+        private bool reload = false;
         private float currentLaunchForce;
         private float chargeSpeed;
-        private float reloadTime;
+        private float reloadTime = 0f;
 
         void Start()
         {
-            chargeSpeed = (MaxLaunchForce - MinLaunchForce) / MaxChargeTime;
+            chargeSpeed = (m_MaxLaunchForce - m_MinLaunchForce) / m_MaxChargeTime;
 
-            currentLaunchForce = MinLaunchForce;
-            AimSlider.value = AimSlider.minValue;
-
-            charge = false;
-            reload = false;
+            currentLaunchForce = m_MinLaunchForce;
+            m_ChargeSlider.value = m_ChargeSlider.minValue;
         }
 
         void Update()
         {
             if (reload)
-                reloadTime -= Time.deltaTime;
-            if (reloadTime < 0)
+                reloadTime += Time.deltaTime;
+
+            if (reloadTime > m_AtackSpeed && reload)
             {
-                reloadTime = AtackSpeed;
+                reloadTime -= m_AtackSpeed;
                 reload = false;
             }
         }
 
         public void FireButtonPress()
         {
-            if (!charge && !reload && playerHandler.GetEnergy() >= EnergyCost)
+            if (!charge && !reload && m_PlayerHandler.GetEnergy() >= m_EnergyCost)
             {
                 charge = true;
-                currentLaunchForce = MinLaunchForce;
-                AimSlider.value = AimSlider.minValue;
-                playerHandler.SetEnergy(-EnergyCost);
+                currentLaunchForce = m_MinLaunchForce;
+                m_ChargeSlider.value = m_ChargeSlider.minValue;
+                m_PlayerHandler.SetEnergy(-m_EnergyCost);
             }
         }
 
@@ -64,14 +62,14 @@ namespace TankBattle
             {
                 currentLaunchForce += chargeSpeed * Time.deltaTime;
 
-                if (currentLaunchForce >= MaxLaunchForce)
+                if (currentLaunchForce >= m_MaxLaunchForce)
                 {
-                    currentLaunchForce = MaxLaunchForce;
+                    currentLaunchForce = m_MaxLaunchForce;
                     Fire();
                     return;
                 }
 
-                AimSlider.value = (currentLaunchForce - MinLaunchForce) / (MaxLaunchForce - MinLaunchForce);
+                m_ChargeSlider.value = (currentLaunchForce - m_MinLaunchForce) / (m_MaxLaunchForce - m_MinLaunchForce);
             }
         }
 
@@ -85,11 +83,11 @@ namespace TankBattle
 
         private void Fire()
         {
-            Rigidbody shellInstance = Instantiate(Projectile, FireTransform.position, FireTransform.rotation) as Rigidbody;
-            shellInstance.velocity = currentLaunchForce * FireTransform.forward;
+            Rigidbody shellInstance = Instantiate(m_ProjectileRigidbody, m_FireTransform.position, m_FireTransform.rotation) as Rigidbody;
+            shellInstance.velocity = currentLaunchForce * m_FireTransform.forward;
 
-            currentLaunchForce = MinLaunchForce;
-            AimSlider.value = AimSlider.minValue;
+            currentLaunchForce = m_MinLaunchForce;
+            m_ChargeSlider.value = m_ChargeSlider.minValue;
             charge = false;
             reload = true;
         }

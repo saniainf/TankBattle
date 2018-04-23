@@ -1,59 +1,53 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 namespace TankBattle
 {
     public class PlayerHandler : MonoBehaviour
     {
-        public GameObject EmptyWeapon;
-        public Transform weaponTransform;
+        [Header("PlayerComponents")]
+        public Rigidbody m_Rigidbody;
+        public PlayerAttributes m_Attributes;
+        public PlayerInputController m_InputController;
+        public PlayerMovement m_Movement;
+
+        [Header("PlayerWeapon")]
+        public Transform m_WeaponTransform;
+        public GameObject m_EmptyWeapon;
 
         [Header("Player Health")]
-        public Canvas playerCanvasHealth;
-        public Slider healthSlider;
-        public Image healthSliderImage;
-        public Color fullHealthColor = Color.green;
-        public Color zeroHealthColor = Color.red;
-
-        private Rigidbody playerRigidbody;
-        private PlayerAttributes playerAttributes;
-        private PlayerInputController playerInputController;
+        public Canvas m_HealthCanvas;
+        public Slider m_HealthSlider;
+        public Image m_HealthSliderFillImage;
+        public Color m_FullHealthSliderColor = Color.green;
+        public Color m_ZeroHealthSliderColor = Color.red;
 
         private GameObject currentWeapon;
-
-        private void Awake()
-        {
-            playerAttributes = gameObject.GetComponent<PlayerAttributes>();
-            playerRigidbody = gameObject.GetComponent<Rigidbody>();
-            playerInputController = gameObject.GetComponent<PlayerInputController>();
-        }
 
         void Update()
         {
             SetHealthUI();
-            regenAttributes();
+            RegenAttributes();
         }
 
         public void ResetPlayer()
         {
-            playerAttributes.ResetAttributes();
+            m_Attributes.ResetAttributes();
             RemoveWeapon();
         }
 
         public void EnablePlayer()
         {
-            playerInputController.enabled = true;
-            playerCanvasHealth.enabled = true;
-            playerRigidbody.isKinematic = false;
+            m_InputController.enabled = true;
+            m_HealthCanvas.enabled = true;
+            m_Rigidbody.isKinematic = false;
         }
 
         public void DisablePlayer()
         {
-            playerInputController.enabled = false;
-            playerCanvasHealth.enabled = false;
-            playerRigidbody.isKinematic = true;
+            m_InputController.enabled = false;
+            m_HealthCanvas.enabled = false;
+            m_Rigidbody.isKinematic = true;
         }
 
         public void SetWeapon(GameObject weaponPrefab)
@@ -61,23 +55,23 @@ namespace TankBattle
             if (currentWeapon != null)
                 Destroy(currentWeapon);
 
-            currentWeapon = Instantiate(weaponPrefab, weaponTransform);
+            currentWeapon = Instantiate(weaponPrefab, m_WeaponTransform);
 
             IWeapon weapon = currentWeapon.GetComponent<IWeapon>();
-            weapon.playerHandler = this;
+            weapon.m_PlayerHandler = this;
 
             MeshRenderer[] renderers = currentWeapon.GetComponents<MeshRenderer>();
             for (int i = 0; i < renderers.Length; i++)
             {
-                renderers[i].material.color = playerAttributes.PlayerColor;
+                renderers[i].material.color = m_Attributes.PlayerColor;
             }
 
-            playerInputController.playerWeapon = weapon;
+            m_InputController.m_PlayerWeapon = weapon;
         }
 
         public void RemoveWeapon()
         {
-            SetWeapon(EmptyWeapon);
+            SetWeapon(m_EmptyWeapon);
         }
 
         public void SetAbillity()
@@ -100,10 +94,10 @@ namespace TankBattle
 
         }
 
-        public void SetHealth(float hp)
+        public void SetHealth(float plusHP)
         {
-            playerAttributes.PlayerCurrentHealth = Mathf.Clamp(playerAttributes.PlayerCurrentHealth += hp, 0, playerAttributes.PlayerMaxHealth);
-            if (playerAttributes.PlayerCurrentHealth <= 0 && !playerAttributes.PlayerDeath)
+            m_Attributes.PlayerCurrentHealth = Mathf.Clamp(m_Attributes.PlayerCurrentHealth += plusHP, 0, m_Attributes.PlayerMaxHealth);
+            if (m_Attributes.PlayerCurrentHealth <= 0 && !m_Attributes.PlayerDeath)
             {
                 OnDeath();
             }
@@ -111,7 +105,7 @@ namespace TankBattle
 
         public float GetHealth()
         {
-            return playerAttributes.PlayerCurrentHealth;
+            return m_Attributes.PlayerCurrentHealth;
         }
 
         public void TakeDamage(float damage)
@@ -119,36 +113,36 @@ namespace TankBattle
             SetHealth(-damage);
         }
 
-        public void SetEnergy(float energy)
+        public void SetEnergy(float plusEnergy)
         {
-            playerAttributes.PlayerCurrentEnergy = Mathf.Clamp(playerAttributes.PlayerCurrentEnergy += energy, 0, playerAttributes.PlayerMaxEnergy);
+            m_Attributes.PlayerCurrentEnergy = Mathf.Clamp(m_Attributes.PlayerCurrentEnergy += plusEnergy, 0, m_Attributes.PlayerMaxEnergy);
         }
 
         public float GetEnergy()
         {
-            return playerAttributes.PlayerCurrentEnergy;
+            return m_Attributes.PlayerCurrentEnergy;
         }
 
         public float GetPlayerVelocity()
         {
-            return playerAttributes.PlayerVelocity;
+            return m_Attributes.PlayerVelocity;
         }
 
         private void SetHealthUI()
         {
-            healthSlider.value = (playerAttributes.PlayerCurrentHealth / playerAttributes.PlayerMaxHealth) * 100f;
-            healthSliderImage.color = Color.Lerp(zeroHealthColor, fullHealthColor, playerAttributes.PlayerCurrentHealth / playerAttributes.PlayerMaxHealth);
+            m_HealthSlider.value = (m_Attributes.PlayerCurrentHealth / m_Attributes.PlayerMaxHealth) * 100f;
+            m_HealthSliderFillImage.color = Color.Lerp(m_ZeroHealthSliderColor, m_FullHealthSliderColor, m_Attributes.PlayerCurrentHealth / m_Attributes.PlayerMaxHealth);
         }
 
-        private void regenAttributes()
+        private void RegenAttributes()
         {
-            playerAttributes.PlayerCurrentHealth = Mathf.Min((playerAttributes.PlayerCurrentHealth + (playerAttributes.PlayerCurrentRegenHealth * Time.deltaTime)), playerAttributes.PlayerMaxHealth);
-            playerAttributes.PlayerCurrentEnergy = Mathf.Min((playerAttributes.PlayerCurrentEnergy + (playerAttributes.PlayerCurrentRegenEnergy * Time.deltaTime)), playerAttributes.PlayerMaxEnergy);
+            m_Attributes.PlayerCurrentHealth = Mathf.Min((m_Attributes.PlayerCurrentHealth + (m_Attributes.PlayerCurrentRegenHealth * Time.deltaTime)), m_Attributes.PlayerMaxHealth);
+            m_Attributes.PlayerCurrentEnergy = Mathf.Min((m_Attributes.PlayerCurrentEnergy + (m_Attributes.PlayerCurrentRegenEnergy * Time.deltaTime)), m_Attributes.PlayerMaxEnergy);
         }
 
         private void OnDeath()
         {
-            playerAttributes.PlayerDeath = true;
+            m_Attributes.PlayerDeath = true;
             gameObject.SetActive(false);
         }
     }

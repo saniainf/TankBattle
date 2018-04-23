@@ -2,7 +2,7 @@
 
 namespace TankBattle
 {
-    public class ShellExplosion : MonoBehaviour
+    public class ChargeTurretProjectile : MonoBehaviour
     {
         public LayerMask m_TankMask;
         public ParticleSystem m_ExplosionParticles;

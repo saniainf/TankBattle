@@ -8,24 +8,24 @@ namespace TankBattle
     public class GameManager : MonoBehaviour
     {
         public int m_NumRoundsToWin = 5;
-        public float m_StartDelay = 3f;
-        public float m_EndDelay = 3f;
+        public float m_StarRoundtDelay = 3f;
+        public float m_EndRoundDelay = 3f;
         public CameraControl m_CameraControl;
-        public Text m_MessageText;
-        public UIManager UIPlayers;
-        public GameObject m_TankPrefab;
-        public TankManager[] m_Tanks;
+        public Text m_UIMessageText;
+        public UIManager m_UIPlayers;
+        public GameObject m_PlayerPrefab;
+        public PlayerManager[] m_Players;
 
-        private int m_RoundNumber;
-        private WaitForSeconds m_StartWait;
-        private WaitForSeconds m_EndWait;
-        private TankManager m_RoundWinner;
-        private TankManager m_GameWinner;
+        private int roundNumber;
+        private WaitForSeconds startRoundWait;
+        private WaitForSeconds endRoundWait;
+        private PlayerManager thisRoundWinner;
+        private PlayerManager thisGameWinner;
 
         private void Start()
         {
-            m_StartWait = new WaitForSeconds(m_StartDelay);
-            m_EndWait = new WaitForSeconds(m_EndDelay);
+            startRoundWait = new WaitForSeconds(m_StarRoundtDelay);
+            endRoundWait = new WaitForSeconds(m_EndRoundDelay);
 
             SpawnAllTanks();
             SetCameraTargets();
@@ -36,24 +36,24 @@ namespace TankBattle
 
         private void SpawnAllTanks()
         {
-            for (int i = 0; i < m_Tanks.Length; i++)
+            for (int i = 0; i < m_Players.Length; i++)
             {
-                m_Tanks[i].m_Instance =
-                    Instantiate(m_TankPrefab, m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation) as GameObject;
-                m_Tanks[i].m_PlayerNumber = i + 1;
-                m_Tanks[i].Setup();
-                UIPlayers.SetPlayer(i, m_Tanks[i].m_PlayerAttributes);
+                m_Players[i].m_InstancePlayer =
+                    Instantiate(m_PlayerPrefab, m_Players[i].m_SpawnPoint.position, m_Players[i].m_SpawnPoint.rotation) as GameObject;
+                m_Players[i].m_PlayerNumber = i + 1;
+                m_Players[i].Setup();
+                m_UIPlayers.SetPlayer(i, m_Players[i].m_PlayerAttributes);
             }
         }
 
 
         private void SetCameraTargets()
         {
-            Transform[] targets = new Transform[m_Tanks.Length];
+            Transform[] targets = new Transform[m_Players.Length];
 
             for (int i = 0; i < targets.Length; i++)
             {
-                targets[i] = m_Tanks[i].m_Instance.GetComponent<Transform>();
+                targets[i] = m_Players[i].m_InstancePlayer.GetComponent<Transform>();
             }
 
             m_CameraControl.Targets = targets;
@@ -66,7 +66,7 @@ namespace TankBattle
             yield return StartCoroutine(RoundPlaying());
             yield return StartCoroutine(RoundEnding());
 
-            if (m_GameWinner != null)
+            if (thisGameWinner != null)
             {
                 SceneManager.LoadScene(0);
             }
@@ -85,17 +85,17 @@ namespace TankBattle
 
             m_CameraControl.SetStartPositionAndSize();
 
-            m_RoundNumber++;
-            m_MessageText.text = "ROUND " + m_RoundNumber.ToString();
+            roundNumber++;
+            m_UIMessageText.text = "ROUND " + roundNumber.ToString();
 
-            yield return m_StartWait;
+            yield return startRoundWait;
         }
 
 
         private IEnumerator RoundPlaying()
         {
             EnableTankControl();
-            m_MessageText.text = string.Empty;
+            m_UIMessageText.text = string.Empty;
 
             while (!OneTankLeft())
             {
@@ -108,20 +108,20 @@ namespace TankBattle
         {
             DisableTankControl();
 
-            m_RoundWinner = null;
-            m_RoundWinner = GetRoundWinner();
+            thisRoundWinner = null;
+            thisRoundWinner = GetRoundWinner();
 
-            if (m_RoundWinner != null)
+            if (thisRoundWinner != null)
             {
-                m_RoundWinner.m_Wins++;
+                thisRoundWinner.m_WinsRounds++;
             }
 
-            m_GameWinner = GetGameWinner();
+            thisGameWinner = GetGameWinner();
 
             string message = EndMessage();
-            m_MessageText.text = message;
+            m_UIMessageText.text = message;
 
-            yield return m_EndWait;
+            yield return endRoundWait;
         }
 
 
@@ -129,9 +129,9 @@ namespace TankBattle
         {
             int numTanksLeft = 0;
 
-            for (int i = 0; i < m_Tanks.Length; i++)
+            for (int i = 0; i < m_Players.Length; i++)
             {
-                if (m_Tanks[i].m_Instance.activeSelf)
+                if (m_Players[i].m_InstancePlayer.activeSelf)
                     numTanksLeft++;
             }
 
@@ -139,24 +139,24 @@ namespace TankBattle
         }
 
 
-        private TankManager GetRoundWinner()
+        private PlayerManager GetRoundWinner()
         {
-            for (int i = 0; i < m_Tanks.Length; i++)
+            for (int i = 0; i < m_Players.Length; i++)
             {
-                if (m_Tanks[i].m_Instance.activeSelf)
-                    return m_Tanks[i];
+                if (m_Players[i].m_InstancePlayer.activeSelf)
+                    return m_Players[i];
             }
 
             return null;
         }
 
 
-        private TankManager GetGameWinner()
+        private PlayerManager GetGameWinner()
         {
-            for (int i = 0; i < m_Tanks.Length; i++)
+            for (int i = 0; i < m_Players.Length; i++)
             {
-                if (m_Tanks[i].m_Wins == m_NumRoundsToWin)
-                    return m_Tanks[i];
+                if (m_Players[i].m_WinsRounds == m_NumRoundsToWin)
+                    return m_Players[i];
             }
 
             return null;
@@ -167,18 +167,18 @@ namespace TankBattle
         {
             string message = "DRAW!";
 
-            if (m_RoundWinner != null)
-                message = m_RoundWinner.m_ColoredPlayerText + " WINS THE ROUND!";
+            if (thisRoundWinner != null)
+                message = thisRoundWinner.m_ColoredPlayerText + " WINS THE ROUND!";
 
             message += "\n\n\n\n";
 
-            for (int i = 0; i < m_Tanks.Length; i++)
+            for (int i = 0; i < m_Players.Length; i++)
             {
-                message += m_Tanks[i].m_ColoredPlayerText + ": " + m_Tanks[i].m_Wins + " WINS\n";
+                message += m_Players[i].m_ColoredPlayerText + ": " + m_Players[i].m_WinsRounds + " WINS\n";
             }
 
-            if (m_GameWinner != null)
-                message = m_GameWinner.m_ColoredPlayerText + "\n" + " WINS THE GAME!";
+            if (thisGameWinner != null)
+                message = thisGameWinner.m_ColoredPlayerText + "\n" + " WINS THE GAME!";
 
             return message;
         }
@@ -186,27 +186,27 @@ namespace TankBattle
 
         private void ResetAllTanks()
         {
-            for (int i = 0; i < m_Tanks.Length; i++)
+            for (int i = 0; i < m_Players.Length; i++)
             {
-                m_Tanks[i].Reset();
+                m_Players[i].Reset();
             }
         }
 
 
         private void EnableTankControl()
         {
-            for (int i = 0; i < m_Tanks.Length; i++)
+            for (int i = 0; i < m_Players.Length; i++)
             {
-                m_Tanks[i].EnableControl();
+                m_Players[i].EnableControl();
             }
         }
 
 
         private void DisableTankControl()
         {
-            for (int i = 0; i < m_Tanks.Length; i++)
+            for (int i = 0; i < m_Players.Length; i++)
             {
-                m_Tanks[i].DisableControl();
+                m_Players[i].DisableControl();
             }
         }
     }
