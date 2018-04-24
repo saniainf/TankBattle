@@ -15,4 +15,9 @@ public static class UtilsEnum
 #endif
         return ((int)(IConvertible)mask & (int)(IConvertible)flags) == (int)(IConvertible)flags;
     }
+
+    public static bool HasLayer(this LayerMask mask, int layer)
+    {
+        return ((mask & (1 << layer)) == (1 << layer));
+    }
 }
