@@ -23,6 +23,7 @@ namespace TankBattle
         public Color m_ZeroHealthSliderColor = Color.red;
 
         private GameObject currentWeapon;
+        private MonoBehaviour currentAbility;
 
         void Update()
         {
@@ -34,6 +35,7 @@ namespace TankBattle
         {
             m_Attributes.ResetAttributes();
             RemoveWeapon();
+            RemoveAbility();
         }
 
         public void EnablePlayer()
@@ -74,12 +76,17 @@ namespace TankBattle
             SetWeapon(m_EmptyWeapon);
         }
 
-        public void SetAbillity()
+        public void SetAbility()
+        {
+          
+        }
+
+        public void GetAbility()
         {
 
         }
 
-        public void GetAbillity()
+        public void RemoveAbility()
         {
 
         }
