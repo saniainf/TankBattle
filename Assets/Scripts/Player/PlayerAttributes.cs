@@ -1,10 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace TankBattle
 {
-    public class PlayerAttributes : MonoBehaviour
+    [CreateAssetMenu(fileName = "Player Attributes", menuName = "Player/Attributes")]
+    public class PlayerAttributes : ScriptableObject
     {
         public int PlayerNumber = 1;
         public Color PlayerColor = Color.gray;
@@ -21,7 +20,7 @@ namespace TankBattle
 
         public float PlayerStartingHealth = 100f;
         [HideInInspector] public float PlayerMaxHealth;
-        /*[HideInInspector]*/ public float PlayerCurrentHealth;
+        [HideInInspector] public float PlayerCurrentHealth;
 
         public float PlayerStartingRegenHealth = 1f;
         [HideInInspector] public float PlayerMaxRegenHealth;
@@ -29,11 +28,14 @@ namespace TankBattle
 
         public float PlayerStartingEnergy = 100f;
         [HideInInspector] public float PlayerMaxEnergy;
-        /*[HideInInspector]*/ public float PlayerCurrentEnergy;
+        [HideInInspector] public float PlayerCurrentEnergy;
 
         public float PlayerStartingRegenEnergy = 5f;
         [HideInInspector] public float PlayerMaxRegenEnergy;
         [HideInInspector] public float PlayerCurrentRegenEnergy;
+
+        public Ability PlayerStartingAbility;
+        public Weapon PlayerStartingWeapon;
 
         [HideInInspector] public float PlayerVelocity;
 

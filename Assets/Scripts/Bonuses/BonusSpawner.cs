@@ -55,16 +55,16 @@ namespace TankBattle
             //    gameObject.SetActive(false);
             //}
 
-            if (!reload)
-            {
-                PlayerHandler playerHandler;
-                if (playerHandler = other.gameObject.GetComponent<PlayerHandler>())
-                {
-                    bonus.SetActive(false);
-                    reload = true;
-                    playerHandler.SetWeapon(BonusPrefab);
-                }
-            }
+            //if (!reload)
+            //{
+            //    PlayerHandler playerHandler;
+            //    if (playerHandler = other.gameObject.GetComponent<PlayerHandler>())
+            //    {
+            //        bonus.SetActive(false);
+            //        reload = true;
+            //        playerHandler.SetWeapon(BonusPrefab);
+            //    }
+            //}
         }
     }
 }

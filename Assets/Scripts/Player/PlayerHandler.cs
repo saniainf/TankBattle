@@ -7,23 +7,33 @@ namespace TankBattle
     {
         [Header("PlayerComponents")]
         public Rigidbody m_Rigidbody;
-        public PlayerAttributes m_Attributes;
-        public PlayerInputController m_InputController;
-        public PlayerMovement m_Movement;
+        [SerializeField] private PlayerAttributes m_PlayerAttributes;
+        [HideInInspector] public PlayerAttributes m_Attributes;
+        [SerializeField] private PlayerInputController m_InputController;
+        public PlayerAbilityHandler m_AbilityHandler;
+        public PlayerWeaponHandler m_WeaponHandler;
+        [HideInInspector]public PlayerMovement m_Movement;
 
         [Header("PlayerWeapon")]
         public Transform m_WeaponTransform;
-        public GameObject m_EmptyWeapon;
 
         [Header("Player Health")]
-        public Canvas m_HealthCanvas;
-        public Slider m_HealthSlider;
-        public Image m_HealthSliderFillImage;
-        public Color m_FullHealthSliderColor = Color.green;
-        public Color m_ZeroHealthSliderColor = Color.red;
+        [SerializeField]
+        private Canvas m_HealthCanvas;
+        [SerializeField] private Slider m_HealthSlider;
+        [SerializeField] private Image m_HealthSliderFillImage;
+        [SerializeField] private Color m_FullHealthSliderColor = Color.green;
+        [SerializeField] private Color m_ZeroHealthSliderColor = Color.red;
 
-        private GameObject currentWeapon;
-        private MonoBehaviour currentAbility;
+        [HideInInspector] public GameObject CurrentWeapon;
+
+        private void Awake()
+        {
+            m_Attributes = Instantiate(m_PlayerAttributes);
+            m_Movement = new PlayerMovement(this);
+            m_AbilityHandler.m_PlayerHandler = this;
+            m_WeaponHandler.m_PlayerHandler = this;
+        }
 
         void Update()
         {
@@ -52,53 +62,34 @@ namespace TankBattle
             m_Rigidbody.isKinematic = true;
         }
 
-        public void SetWeapon(GameObject weaponPrefab)
-        {
-            if (currentWeapon != null)
-                Destroy(currentWeapon);
+        //public void SetWeapon(GameObject weaponPrefab)
+        //{
+        //    if (CurrentWeapon != null)
+        //        Destroy(CurrentWeapon);
 
-            currentWeapon = Instantiate(weaponPrefab, m_WeaponTransform);
+        //    CurrentWeapon = Instantiate(weaponPrefab, m_WeaponTransform);
 
-            IWeapon weapon = currentWeapon.GetComponent<IWeapon>();
-            weapon.m_PlayerHandler = this;
+        //    IWeapon weapon = CurrentWeapon.GetComponent<IWeapon>();
+        //    weapon.m_PlayerHandler = this;
 
-            MeshRenderer[] renderers = currentWeapon.GetComponents<MeshRenderer>();
-            for (int i = 0; i < renderers.Length; i++)
-            {
-                renderers[i].material.color = m_Attributes.PlayerColor;
-            }
+        //    MeshRenderer[] renderers = CurrentWeapon.GetComponents<MeshRenderer>();
+        //    for (int i = 0; i < renderers.Length; i++)
+        //    {
+        //        renderers[i].material.color = m_Attributes.PlayerColor;
+        //    }
 
-            m_InputController.m_PlayerWeapon = weapon;
-        }
+        //    m_InputController.m_PlayerWeapon = weapon;
+        //}
 
         public void RemoveWeapon()
         {
-            SetWeapon(m_EmptyWeapon);
-        }
-
-        public void SetAbility()
-        {
-          
-        }
-
-        public void GetAbility()
-        {
-
+            //SetWeapon(m_EmptyWeapon);
+            m_WeaponHandler.SetWeapon(Instantiate(m_Attributes.PlayerStartingWeapon));
         }
 
         public void RemoveAbility()
         {
-
-        }
-
-        public void SetModificator()
-        {
-
-        }
-
-        public void GetModificator()
-        {
-
+            m_AbilityHandler.SetAbility(Instantiate(m_Attributes.PlayerStartingAbility));
         }
 
         public void SetHealth(float plusHP)
@@ -120,9 +111,9 @@ namespace TankBattle
             SetHealth(-damage);
         }
 
-        public void SetEnergy(float plusEnergy)
+        public void SetEnergy(float plusEP)
         {
-            m_Attributes.PlayerCurrentEnergy = Mathf.Clamp(m_Attributes.PlayerCurrentEnergy += plusEnergy, 0, m_Attributes.PlayerMaxEnergy);
+            m_Attributes.PlayerCurrentEnergy = Mathf.Clamp(m_Attributes.PlayerCurrentEnergy += plusEP, 0, m_Attributes.PlayerMaxEnergy);
         }
 
         public float GetEnergy()
@@ -133,6 +124,11 @@ namespace TankBattle
         public float GetPlayerVelocity()
         {
             return m_Attributes.PlayerVelocity;
+        }
+
+        public Transform GetWeaponTransform()
+        {
+            return m_WeaponTransform;
         }
 
         private void SetHealthUI()

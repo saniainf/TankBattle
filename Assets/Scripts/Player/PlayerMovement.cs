@@ -4,28 +4,33 @@ using UnityEngine;
 
 namespace TankBattle
 {
-    public class PlayerMovement : MonoBehaviour
+    [System.Serializable]
+    public class PlayerMovement
     {
-        public PlayerHandler m_PlayerHandler;
-
+        private PlayerHandler playerHandler;
         private Vector3 previousPosition;
+
+        public PlayerMovement(PlayerHandler playerHandler)
+        {
+            this.playerHandler = playerHandler;
+        }
 
         public void MovePlayer(float power)
         {
             // TODO заменить реализацию на чтото более вменяемое
-            Vector3 movement = m_PlayerHandler.transform.forward * power * m_PlayerHandler.m_Attributes.PlayerCurrentSpeed * Time.fixedDeltaTime;
-            m_PlayerHandler.m_Rigidbody.MovePosition(m_PlayerHandler.m_Rigidbody.position + movement);
+            Vector3 movement = playerHandler.transform.forward * power * playerHandler.m_Attributes.PlayerCurrentSpeed * Time.fixedDeltaTime;
+            playerHandler.m_Rigidbody.MovePosition(playerHandler.m_Rigidbody.position + movement);
 
-            m_PlayerHandler.m_Attributes.PlayerVelocity = Mathf.Sign(power) * ((m_PlayerHandler.transform.position - previousPosition).magnitude / Time.deltaTime);
-            previousPosition = m_PlayerHandler.transform.position;
+            playerHandler.m_Attributes.PlayerVelocity = Mathf.Sign(power) * ((playerHandler.transform.position - previousPosition).magnitude / Time.deltaTime);
+            previousPosition = playerHandler.transform.position;
         }
 
         public void TurnPlayer(float power)
         {
             // TODO заменить реализацию на чтото более вменяемое
-            float turn = power * m_PlayerHandler.m_Attributes.PlayerCurrentTurnSpeed * Time.fixedDeltaTime;
+            float turn = power * playerHandler.m_Attributes.PlayerCurrentTurnSpeed * Time.fixedDeltaTime;
             Quaternion turnRotation = Quaternion.Euler(0f, turn, 0f);
-            m_PlayerHandler.m_Rigidbody.MoveRotation(m_PlayerHandler.m_Rigidbody.rotation * turnRotation);
+            playerHandler.m_Rigidbody.MoveRotation(playerHandler.m_Rigidbody.rotation * turnRotation);
         }
     }
 }
