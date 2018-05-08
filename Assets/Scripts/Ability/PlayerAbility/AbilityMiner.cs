@@ -25,9 +25,9 @@ namespace TankBattle
                 PlayerHandler otherPlayer = other[i].GetComponent<PlayerHandler>();
                 if (otherPlayer)
                 {
-                    if (otherPlayer.m_Attributes.PlayerNumber != m_PlayerHandler.m_Attributes.PlayerNumber)
+                    if (otherPlayer.m_PlayerAttributes.PlayerNumber != m_PlayerHandler.m_PlayerAttributes.PlayerNumber)
                     {
-                        Debug.Log("impact" + otherPlayer.m_Attributes.PlayerNumber);
+                        Debug.Log("impact" + otherPlayer.m_PlayerAttributes.PlayerNumber);
                         otherPlayer.TakeDamage(10f);
                         //player.GetComponent<Rigidbody>().AddExplosionForce(1000f, abilityProjectile.transform.position, 20f);
                         Destroy(abilityProjectile.gameObject);

@@ -6,7 +6,7 @@ namespace TankBattle
 {
     public class BonusSpawner : MonoBehaviour
     {
-        public GameObject BonusPrefab;
+        public Weapon weapon;
         public GameObject BonusModel;
         public float ReloadTimer = 3.0f;
         public float TransformY = 0.3f;
@@ -65,6 +65,15 @@ namespace TankBattle
             //        playerHandler.SetWeapon(BonusPrefab);
             //    }
             //}
+
+            if (!reload)
+            {
+                PlayerHandler playerHandler;
+                if (playerHandler = other.gameObject.GetComponent<PlayerHandler>())
+                {
+                    playerHandler.m_PlayerWeaponHandler.SetWeapon(Instantiate(weapon));
+                }
+            }
         }
     }
 }

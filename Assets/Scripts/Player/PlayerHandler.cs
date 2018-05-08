@@ -7,12 +7,13 @@ namespace TankBattle
     {
         [Header("PlayerComponents")]
         public Rigidbody m_Rigidbody;
-        [SerializeField] private PlayerAttributes m_PlayerAttributes;
-        [HideInInspector] public PlayerAttributes m_Attributes;
-        [SerializeField] private PlayerInputController m_InputController;
-        public PlayerAbilityHandler m_AbilityHandler;
-        public PlayerWeaponHandler m_WeaponHandler;
-        [HideInInspector]public PlayerMovement m_Movement;
+        [SerializeField] private PlayerAttributes playerAttributes;
+
+        [HideInInspector] public PlayerAttributes m_PlayerAttributes;
+        private PlayerInputController inputController;
+        [HideInInspector] public PlayerAbilityHandler m_PlayerAbilityHandler;
+        [HideInInspector] public PlayerWeaponHandler m_PlayerWeaponHandler;
+        [HideInInspector] public PlayerMovement m_Movement;
 
         [Header("PlayerWeapon")]
         public Transform m_WeaponTransform;
@@ -29,10 +30,14 @@ namespace TankBattle
 
         private void Awake()
         {
-            m_Attributes = Instantiate(m_PlayerAttributes);
+            m_PlayerAttributes = Instantiate(playerAttributes);
+            inputController = gameObject.GetComponent<PlayerInputController>();
+            m_PlayerAbilityHandler = gameObject.GetComponent<PlayerAbilityHandler>();
+            m_PlayerWeaponHandler = gameObject.GetComponent<PlayerWeaponHandler>();
             m_Movement = new PlayerMovement(this);
-            m_AbilityHandler.m_PlayerHandler = this;
-            m_WeaponHandler.m_PlayerHandler = this;
+
+            m_PlayerAbilityHandler.m_PlayerHandler = this;
+            m_PlayerWeaponHandler.m_PlayerHandler = this;
         }
 
         void Update()
@@ -43,21 +48,21 @@ namespace TankBattle
 
         public void ResetPlayer()
         {
-            m_Attributes.ResetAttributes();
-            RemoveWeapon();
-            RemoveAbility();
+            m_PlayerAttributes.ResetAttributes();
+            ResetWeapon();
+            ResetAbility();
         }
 
         public void EnablePlayer()
         {
-            m_InputController.enabled = true;
+            inputController.enabled = true;
             m_HealthCanvas.enabled = true;
             m_Rigidbody.isKinematic = false;
         }
 
         public void DisablePlayer()
         {
-            m_InputController.enabled = false;
+            inputController.enabled = false;
             m_HealthCanvas.enabled = false;
             m_Rigidbody.isKinematic = true;
         }
@@ -81,21 +86,20 @@ namespace TankBattle
         //    m_InputController.m_PlayerWeapon = weapon;
         //}
 
-        public void RemoveWeapon()
+        public void ResetWeapon()
         {
-            //SetWeapon(m_EmptyWeapon);
-            m_WeaponHandler.SetWeapon(Instantiate(m_Attributes.PlayerStartingWeapon));
+            m_PlayerWeaponHandler.SetWeapon(Instantiate(m_PlayerAttributes.PlayerStartingWeapon));
         }
 
-        public void RemoveAbility()
+        public void ResetAbility()
         {
-            m_AbilityHandler.SetAbility(Instantiate(m_Attributes.PlayerStartingAbility));
+            m_PlayerAbilityHandler.SetAbility(Instantiate(m_PlayerAttributes.PlayerStartingAbility));
         }
 
         public void SetHealth(float plusHP)
         {
-            m_Attributes.PlayerCurrentHealth = Mathf.Clamp(m_Attributes.PlayerCurrentHealth += plusHP, 0, m_Attributes.PlayerMaxHealth);
-            if (m_Attributes.PlayerCurrentHealth <= 0 && !m_Attributes.PlayerDeath)
+            m_PlayerAttributes.PlayerCurrentHealth = Mathf.Clamp(m_PlayerAttributes.PlayerCurrentHealth += plusHP, 0, m_PlayerAttributes.PlayerMaxHealth);
+            if (m_PlayerAttributes.PlayerCurrentHealth <= 0 && !m_PlayerAttributes.PlayerDeath)
             {
                 OnDeath();
             }
@@ -103,7 +107,7 @@ namespace TankBattle
 
         public float GetHealth()
         {
-            return m_Attributes.PlayerCurrentHealth;
+            return m_PlayerAttributes.PlayerCurrentHealth;
         }
 
         public void TakeDamage(float damage)
@@ -113,17 +117,17 @@ namespace TankBattle
 
         public void SetEnergy(float plusEP)
         {
-            m_Attributes.PlayerCurrentEnergy = Mathf.Clamp(m_Attributes.PlayerCurrentEnergy += plusEP, 0, m_Attributes.PlayerMaxEnergy);
+            m_PlayerAttributes.PlayerCurrentEnergy = Mathf.Clamp(m_PlayerAttributes.PlayerCurrentEnergy += plusEP, 0, m_PlayerAttributes.PlayerMaxEnergy);
         }
 
         public float GetEnergy()
         {
-            return m_Attributes.PlayerCurrentEnergy;
+            return m_PlayerAttributes.PlayerCurrentEnergy;
         }
 
         public float GetPlayerVelocity()
         {
-            return m_Attributes.PlayerVelocity;
+            return m_PlayerAttributes.PlayerVelocity;
         }
 
         public Transform GetWeaponTransform()
@@ -133,19 +137,19 @@ namespace TankBattle
 
         private void SetHealthUI()
         {
-            m_HealthSlider.value = (m_Attributes.PlayerCurrentHealth / m_Attributes.PlayerMaxHealth) * 100f;
-            m_HealthSliderFillImage.color = Color.Lerp(m_ZeroHealthSliderColor, m_FullHealthSliderColor, m_Attributes.PlayerCurrentHealth / m_Attributes.PlayerMaxHealth);
+            m_HealthSlider.value = (m_PlayerAttributes.PlayerCurrentHealth / m_PlayerAttributes.PlayerMaxHealth) * 100f;
+            m_HealthSliderFillImage.color = Color.Lerp(m_ZeroHealthSliderColor, m_FullHealthSliderColor, m_PlayerAttributes.PlayerCurrentHealth / m_PlayerAttributes.PlayerMaxHealth);
         }
 
         private void RegenAttributes()
         {
-            m_Attributes.PlayerCurrentHealth = Mathf.Min((m_Attributes.PlayerCurrentHealth + (m_Attributes.PlayerCurrentRegenHealth * Time.deltaTime)), m_Attributes.PlayerMaxHealth);
-            m_Attributes.PlayerCurrentEnergy = Mathf.Min((m_Attributes.PlayerCurrentEnergy + (m_Attributes.PlayerCurrentRegenEnergy * Time.deltaTime)), m_Attributes.PlayerMaxEnergy);
+            m_PlayerAttributes.PlayerCurrentHealth = Mathf.Min((m_PlayerAttributes.PlayerCurrentHealth + (m_PlayerAttributes.PlayerCurrentRegenHealth * Time.deltaTime)), m_PlayerAttributes.PlayerMaxHealth);
+            m_PlayerAttributes.PlayerCurrentEnergy = Mathf.Min((m_PlayerAttributes.PlayerCurrentEnergy + (m_PlayerAttributes.PlayerCurrentRegenEnergy * Time.deltaTime)), m_PlayerAttributes.PlayerMaxEnergy);
         }
 
         private void OnDeath()
         {
-            m_Attributes.PlayerDeath = true;
+            m_PlayerAttributes.PlayerDeath = true;
             gameObject.SetActive(false);
         }
     }

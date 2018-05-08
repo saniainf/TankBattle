@@ -6,9 +6,7 @@ namespace TankBattle
 {
     public class PlayerInputController : MonoBehaviour
     {
-        //[HideInInspector]public IWeapon m_PlayerWeapon;
-
-        public PlayerHandler m_PlayerHandler;
+        private PlayerHandler playerHandler;
 
         private string movementAxisName;
         private string turnAxisName;
@@ -18,6 +16,11 @@ namespace TankBattle
         private float movementInputValue;
         private float turnInputValue;
 
+        private void Awake()
+        {
+            playerHandler = gameObject.GetComponent<PlayerHandler>();
+        }
+
         private void OnEnable()
         {
             movementInputValue = 0f;
@@ -26,49 +29,46 @@ namespace TankBattle
 
         void Start()
         {
-            movementAxisName = "Vertical" + m_PlayerHandler.m_Attributes.PlayerNumber;
-            turnAxisName = "Horizontal" + m_PlayerHandler.m_Attributes.PlayerNumber;
-            weaponButtonName = "Fire" + m_PlayerHandler.m_Attributes.PlayerNumber;
-            abilityButtonName = "Ability" + m_PlayerHandler.m_Attributes.PlayerNumber;
+            movementAxisName = "Vertical" + playerHandler.m_PlayerAttributes.PlayerNumber;
+            turnAxisName = "Horizontal" + playerHandler.m_PlayerAttributes.PlayerNumber;
+            weaponButtonName = "Fire" + playerHandler.m_PlayerAttributes.PlayerNumber;
+            abilityButtonName = "Ability" + playerHandler.m_PlayerAttributes.PlayerNumber;
         }
 
         private void FixedUpdate()
         {
             movementInputValue = Input.GetAxis(movementAxisName);
             turnInputValue = Input.GetAxis(turnAxisName);
-            m_PlayerHandler.m_Movement.MovePlayer(movementInputValue);
-            m_PlayerHandler.m_Movement.TurnPlayer(turnInputValue);
+            playerHandler.m_Movement.MovePlayer(movementInputValue);
+            playerHandler.m_Movement.TurnPlayer(turnInputValue);
         }
 
         void Update()
         {
             if (Input.GetButtonDown(weaponButtonName))
             {
-                //m_PlayerWeapon.FireButtonPress();
-                m_PlayerHandler.m_WeaponHandler.WeaponButtonPress();
+                playerHandler.m_PlayerWeaponHandler.WeaponButtonPress();
             }
             else if (Input.GetButton(weaponButtonName))
             {
-                //m_PlayerWeapon.FireButtonHold();
-                m_PlayerHandler.m_WeaponHandler.WeaponButtonHold();
+                playerHandler.m_PlayerWeaponHandler.WeaponButtonHold();
             }
             else if (Input.GetButtonUp(weaponButtonName))
             {
-                //m_PlayerWeapon.FireButtonRelease();
-                m_PlayerHandler.m_WeaponHandler.WeaponButtonRelease();
+                playerHandler.m_PlayerWeaponHandler.WeaponButtonRelease();
             }
 
             if (Input.GetButtonDown(abilityButtonName))
             {
-                m_PlayerHandler.m_AbilityHandler.AbilityButtonPress();
+                playerHandler.m_PlayerAbilityHandler.AbilityButtonPress();
             }
             else if (Input.GetButton(abilityButtonName))
             {
-                m_PlayerHandler.m_AbilityHandler.AbilityButtonHold();
+                playerHandler.m_PlayerAbilityHandler.AbilityButtonHold();
             }
             else if (Input.GetButtonUp(abilityButtonName))
             {
-                m_PlayerHandler.m_AbilityHandler.AbilityButtonRelease();
+                playerHandler.m_PlayerAbilityHandler.AbilityButtonRelease();
             }
         }
 

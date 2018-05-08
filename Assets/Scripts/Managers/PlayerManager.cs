@@ -19,7 +19,7 @@ namespace TankBattle
         {
             m_PlayerHandler = m_InstancePlayer.GetComponent<PlayerHandler>();
 
-            m_PlayerAttributes = m_PlayerHandler.m_Attributes;
+            m_PlayerAttributes = m_PlayerHandler.m_PlayerAttributes;
             m_PlayerAttributes.PlayerNumber = m_PlayerNumber;
             m_PlayerAttributes.PlayerColor = m_PlayerColor;
 
