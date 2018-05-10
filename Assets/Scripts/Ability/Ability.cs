@@ -14,6 +14,8 @@ namespace TankBattle
 
         public virtual void AbilityButtonRelease() { }
 
+        public virtual void RemoveAbility() { }
+
         public virtual void OnImpact(AbilityProjectile abilityProjectile, Collider[] other) { }
     }
 }

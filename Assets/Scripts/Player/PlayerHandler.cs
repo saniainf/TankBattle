@@ -67,25 +67,6 @@ namespace TankBattle
             m_Rigidbody.isKinematic = true;
         }
 
-        //public void SetWeapon(GameObject weaponPrefab)
-        //{
-        //    if (CurrentWeapon != null)
-        //        Destroy(CurrentWeapon);
-
-        //    CurrentWeapon = Instantiate(weaponPrefab, m_WeaponTransform);
-
-        //    IWeapon weapon = CurrentWeapon.GetComponent<IWeapon>();
-        //    weapon.m_PlayerHandler = this;
-
-        //    MeshRenderer[] renderers = CurrentWeapon.GetComponents<MeshRenderer>();
-        //    for (int i = 0; i < renderers.Length; i++)
-        //    {
-        //        renderers[i].material.color = m_Attributes.PlayerColor;
-        //    }
-
-        //    m_InputController.m_PlayerWeapon = weapon;
-        //}
-
         public void ResetWeapon()
         {
             m_PlayerWeaponHandler.SetWeapon(Instantiate(m_PlayerAttributes.PlayerStartingWeapon));

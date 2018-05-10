@@ -16,6 +16,11 @@ namespace TankBattle
 
         public void SetAbility(Ability ability)
         {
+            if (m_CurrentAbility != null)
+            {
+                m_CurrentAbility.RemoveAbility();
+                Destroy(m_CurrentAbility);
+            }
             m_CurrentAbility = ability;
             m_CurrentAbility.m_PlayerHandler = m_PlayerHandler;
         }

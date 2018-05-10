@@ -71,6 +71,8 @@ namespace TankBattle
                 PlayerHandler playerHandler;
                 if (playerHandler = other.gameObject.GetComponent<PlayerHandler>())
                 {
+                    bonus.SetActive(false);
+                    reload = true;
                     playerHandler.m_PlayerWeaponHandler.SetWeapon(Instantiate(weapon));
                 }
             }

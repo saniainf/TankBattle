@@ -20,10 +20,12 @@ namespace TankBattle
             if (turretPrefab != null)
             {
                 weaponTurret = Instantiate(turretPrefab, weaponTransform);
-                fireTransform = Instantiate(fireTransform, weaponTurret.transform);
-
                 MeshRenderer renderer = weaponTurret.GetComponent<MeshRenderer>();
                 renderer.material.color = playerHandler.m_PlayerAttributes.PlayerColor;
+            }
+            if (fireTransform != null)
+            {
+                fireTransform = Instantiate(fireTransform, weaponTurret.transform);
             }
         }
 
@@ -34,6 +36,8 @@ namespace TankBattle
                 Destroy(weaponTurret);
             }
         }
+
+        public virtual void Update() { }
 
         public virtual void WeaponButtonPress() { }
 
