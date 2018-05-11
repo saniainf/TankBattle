@@ -12,10 +12,8 @@ namespace TankBattle
         public void SetWeapon(Weapon weapon)
         {
             if (m_CurrentWeapon != null)
-            {
                 m_CurrentWeapon.RemoveWeapon();
-                Destroy(m_CurrentWeapon);
-            }
+
             m_CurrentWeapon = weapon;
             m_CurrentWeapon.SetupWeapon(m_PlayerHandler, m_PlayerHandler.m_WeaponTransform);
         }

@@ -3,21 +3,31 @@ using System.Collections;
 
 namespace TankBattle
 {
-    public class WeaponProjectile : MonoBehaviour
+    public abstract class WeaponProjectile : ScriptableObject
     {
-        [HideInInspector] public Weapon m_ParentWeapon;
-        [HideInInspector] public float m_CollisionRadius = 0.1f;
-        [HideInInspector] public LayerMask m_ActiveLayers;
+        [SerializeField] protected GameObject projectilePrefab;
+        [SerializeField] private float maxLifeTime = 5f;
+        protected int playerNumber;
+        protected GameObject weaponProjectile;
+        protected Transform fireTransform;
 
-        private Collider[] colliders;
-
-        private void FixedUpdate()
+        public virtual void SetupProjectile(int playerNumber, float playerVelocity, Transform fireTransform)
         {
-            colliders = Physics.OverlapSphere(transform.position, m_CollisionRadius, m_ActiveLayers);
-            if (colliders.Length > 0)
-            {
-                m_ParentWeapon.OnImpact(this, colliders);
-            }
+            this.playerNumber = playerNumber;
+            this.fireTransform = fireTransform;
+            if (projectilePrefab != null)
+                weaponProjectile = Instantiate(projectilePrefab, fireTransform.position, fireTransform.rotation);
+            Destroy(weaponProjectile, maxLifeTime);
+            Destroy(this, maxLifeTime);
+        }
+
+        public virtual void OnImpact(ProjectileBehaviour projectileBehaviour, Collider[] other) { }
+
+        public virtual void RemoveProjectile()
+        {
+            if (weaponProjectile != null)
+                Destroy(weaponProjectile);
+            Destroy(this);
         }
     }
 }

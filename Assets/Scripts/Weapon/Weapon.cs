@@ -7,7 +7,7 @@ namespace TankBattle
     public abstract class Weapon : ScriptableObject
     {
         [SerializeField] protected GameObject turretPrefab;
-        [SerializeField] protected GameObject projectilePrefab;
+        [SerializeField] protected WeaponProjectile projectile;
         [SerializeField] protected Transform fireTransform;
         protected PlayerHandler playerHandler;
         protected Transform weaponTransform;
@@ -32,9 +32,9 @@ namespace TankBattle
         public virtual void RemoveWeapon()
         {
             if (weaponTurret != null)
-            {
                 Destroy(weaponTurret);
-            }
+
+            Destroy(this);
         }
 
         public virtual void Update() { }
@@ -44,7 +44,5 @@ namespace TankBattle
         public virtual void WeaponButtonHold() { }
 
         public virtual void WeaponButtonRelease() { }
-
-        public virtual void OnImpact(WeaponProjectile weaponProjectile, Collider[] other) { }
     }
 }
