@@ -7,11 +7,9 @@ public static class UtilsEnum
 {
     public static bool HasFlag(this Enum mask, Enum flags)
     {
-#if DEBUG
+#if UNITY_EDITOR
         if (mask.GetType() != flags.GetType())
-            throw new System.ArgumentException(
-                string.Format("The argument type, '{0}', is not the same as the enum type '{1}'.",
-                flags.GetType(), mask.GetType()));
+            Debug.Log("The argument type, '" + flags.GetType() + "', is not the same as the enum type '" + mask.GetType() + "'.");
 #endif
         return ((int)(IConvertible)mask & (int)(IConvertible)flags) == (int)(IConvertible)flags;
     }

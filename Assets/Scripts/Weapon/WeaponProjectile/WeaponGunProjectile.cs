@@ -1,16 +1,20 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 namespace TankBattle
 {
     [CreateAssetMenu(fileName = "Weapon Gun Projectile", menuName = "Player/Weapon/Projectile/Gun")]
     public class WeaponGunProjectile : WeaponProjectile
     {
-        [SerializeField] private float launchForce = 30f;
+        [Header("Attributes")]
+        [SerializeField]
+        private float startingSpeed = 30f;
         [SerializeField] private float minDamage = 20f;
         [SerializeField] private float maxDamage = 30f;
         [SerializeField] private float explosionForce = 200f;
         [SerializeField] private LayerMask activeLayers;
+        [Header("Effects")]
+        [SerializeField]
+        private ParticleSystem particleSystem;
 
         public override void SetupProjectile(int playerNumber, float playerVelocity, Transform fireTransform)
         {
@@ -22,28 +26,43 @@ namespace TankBattle
                 ProjectileBehaviour projectileBehaviour = weaponProjectile.GetComponent<ProjectileBehaviour>();
                 projectileBehaviour.m_WeaponProjectile = this;
                 projectileBehaviour.m_ActiveLayers = activeLayers;
+                projectileBehaviour.m_ProjectileType = ProjectileType.PROJECTILE_COLLISON_ON_TRIGGER;
                 if (playerVelocity > 0)
-                    rigidbody.velocity = (launchForce + playerVelocity) * fireTransform.forward;
+                    rigidbody.velocity = (startingSpeed + playerVelocity) * fireTransform.forward;
                 else
-                    rigidbody.velocity = launchForce * fireTransform.forward;
+                    rigidbody.velocity = startingSpeed * fireTransform.forward;
             }
         }
 
-        public override void OnImpact(ProjectileBehaviour projectileBehaviour, Collider[] other)
+        public override void OnCollide(ProjectileBehaviour projectileBehaviour, Collider[] other)
         {
+            PlayerHandler otherPlayer;
+            Rigidbody otherRigidBody;
+
             for (int i = 0; i < other.Length; i++)
             {
-                PlayerHandler otherPlayer = other[i].GetComponent<PlayerHandler>();
+                otherRigidBody = other[i].GetComponent<Rigidbody>();
+                if (otherRigidBody)
+                {
+                    otherRigidBody.AddForce(projectileBehaviour.gameObject.transform.forward * explosionForce);
+                }
+
+                otherPlayer = other[i].GetComponent<PlayerHandler>();
                 if (otherPlayer)
                 {
-                    if (otherPlayer.m_PlayerAttributes.PlayerNumber != playerNumber)
+                    if (otherPlayer.GetPlayerNumber() != playerNumber)
                     {
-                        Debug.Log("impact" + otherPlayer.m_PlayerAttributes.PlayerNumber);
-                        otherPlayer.TakeDamage(10f);
-                        //player.GetComponent<Rigidbody>().AddExplosionForce(1000f, abilityProjectile.transform.position, 20f);
+                        Debug.Log("impact" + otherPlayer.GetPlayerNumber());
+                        otherPlayer.TakeDamage(Random.Range(minDamage, maxDamage));
                     }
                 }
             }
+
+            particleSystem = Instantiate(particleSystem, projectileBehaviour.gameObject.transform);
+            particleSystem.gameObject.transform.parent = null;
+            particleSystem.Play();
+            Destroy(particleSystem.gameObject, particleSystem.main.duration);
+
             RemoveProjectile();
         }
     }

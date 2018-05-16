@@ -44,6 +44,9 @@ namespace TankBattle
         {
             SetHealthUI();
             RegenAttributes();
+
+            if (m_PlayerAttributes.PlayerDeath)
+                OnDeath();
         }
 
         public void ResetPlayer()
@@ -81,9 +84,7 @@ namespace TankBattle
         {
             m_PlayerAttributes.PlayerCurrentHealth = Mathf.Clamp(m_PlayerAttributes.PlayerCurrentHealth += plusHP, 0, m_PlayerAttributes.PlayerMaxHealth);
             if (m_PlayerAttributes.PlayerCurrentHealth <= 0 && !m_PlayerAttributes.PlayerDeath)
-            {
-                OnDeath();
-            }
+                m_PlayerAttributes.PlayerDeath = true;
         }
 
         public float GetHealth()
@@ -104,6 +105,11 @@ namespace TankBattle
         public float GetEnergy()
         {
             return m_PlayerAttributes.PlayerCurrentEnergy;
+        }
+
+        public int GetPlayerNumber()
+        {
+            return m_PlayerAttributes.PlayerNumber;
         }
 
         public float GetPlayerVelocity()
@@ -130,7 +136,6 @@ namespace TankBattle
 
         private void OnDeath()
         {
-            m_PlayerAttributes.PlayerDeath = true;
             gameObject.SetActive(false);
         }
     }

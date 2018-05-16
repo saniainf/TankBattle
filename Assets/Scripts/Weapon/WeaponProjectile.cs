@@ -5,7 +5,9 @@ namespace TankBattle
 {
     public abstract class WeaponProjectile : ScriptableObject
     {
-        [SerializeField] protected GameObject projectilePrefab;
+        [Header("Base attributes")]
+        [SerializeField]
+        protected GameObject projectilePrefab;
         [SerializeField] private float maxLifeTime = 5f;
         protected int playerNumber;
         protected GameObject weaponProjectile;
@@ -22,6 +24,8 @@ namespace TankBattle
         }
 
         public virtual void OnImpact(ProjectileBehaviour projectileBehaviour, Collider[] other) { }
+
+        public virtual void OnCollide(ProjectileBehaviour projectileBehaviour, Collider[] other) { }
 
         public virtual void RemoveProjectile()
         {
