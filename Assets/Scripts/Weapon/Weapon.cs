@@ -6,9 +6,12 @@ namespace TankBattle
 {
     public abstract class Weapon : ScriptableObject
     {
+        [Header("Base attributes")]
         [SerializeField] protected GameObject turretPrefab;
         [SerializeField] protected WeaponProjectile projectile;
         [SerializeField] protected Transform fireTransform;
+
+
         protected PlayerHandler playerHandler;
         protected Transform weaponTransform;
         protected GameObject weaponTurret;

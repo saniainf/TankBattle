@@ -6,6 +6,7 @@ namespace TankBattle
     [CreateAssetMenu(fileName = "Weapon Gun", menuName = "Player/Weapon/Gun")]
     public class WeaponGun : Weapon
     {
+        [Header("Attributes")]
         [SerializeField] private float atackSpeed = 0.2f;
         [SerializeField] private float energyCost = 25f;
 
