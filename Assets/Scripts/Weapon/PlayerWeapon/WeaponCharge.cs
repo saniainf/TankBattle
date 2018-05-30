@@ -8,7 +8,8 @@ namespace TankBattle
     public class WeaponCharge : Weapon
     {
         [Header("Attributes")]
-        [SerializeField] private float atackSpeed = 0.2f;
+        [SerializeField]
+        private float atackSpeed = 0.2f;
         [SerializeField] private float energyCost = 25f;
         [SerializeField] private float minDamageMultiplier = 1.2f;
         [SerializeField] private float maxDamageMultiplier = 1.7f;
@@ -16,13 +17,24 @@ namespace TankBattle
 
         [Header("Effects")]
         [SerializeField]
-        private ParticleSystem particleSystem;
+        private ParticleSystem projectileExplosionEffect;
+        [SerializeField] private ParticleSystem chargeEffect;
 
         private bool reload = false;
         private float reloadTime = 0f;
         private bool charge = false;
         private float currentDamageMultiplier;
         private float chargeSpeed;
+
+        public override void SetupWeapon(PlayerHandler playerHandler, Transform weaponTransform)
+        {
+            base.SetupWeapon(playerHandler, weaponTransform);
+
+            chargeEffect = Instantiate(chargeEffect, fireTransform);
+            ParticleSystem.MainModule chargeEffectMain = chargeEffect.main;
+            chargeEffectMain.duration = maxChargeTime;
+            chargeEffectMain.startLifetime = maxChargeTime;
+        }
 
         public override void Update()
         {
@@ -36,19 +48,17 @@ namespace TankBattle
             }
         }
 
-        public override void WeaponButtonPress()
+        public override void WeaponButtonHold()
         {
             if (!charge && !reload && playerHandler.GetEnergy() >= energyCost)
             {
                 playerHandler.SetEnergy(-energyCost);
                 chargeSpeed = (maxDamageMultiplier - minDamageMultiplier) / maxChargeTime;
                 currentDamageMultiplier = minDamageMultiplier;
+                chargeEffect.Play();
                 charge = true;
             }
-        }
 
-        public override void WeaponButtonHold()
-        {
             if (charge)
             {
                 currentDamageMultiplier += chargeSpeed * Time.deltaTime;
@@ -72,8 +82,10 @@ namespace TankBattle
         private void Fire()
         {
             // TODO добавить мультиплер к урону
-            Instantiate(projectile).SetupProjectile(playerHandler.GetPlayerNumber(), playerHandler.GetPlayerVelocity(), fireTransform);
+            chargeEffect.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            charge = false;
             reload = true;
+            Instantiate(projectile).SetupProjectile(playerHandler.GetPlayerNumber(), playerHandler.GetPlayerVelocity(), fireTransform);
         }
     }
 }
