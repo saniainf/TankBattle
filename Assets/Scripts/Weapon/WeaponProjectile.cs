@@ -13,7 +13,7 @@ namespace TankBattle
         protected GameObject weaponProjectile;
         protected Transform fireTransform;
 
-        public virtual void SetupProjectile(int playerNumber, float playerVelocity, Transform fireTransform)
+        public virtual void SetupProjectile(int playerNumber, float playerVelocity, Transform fireTransform, ProjectileModificators projectileModificators)
         {
             this.playerNumber = playerNumber;
             this.fireTransform = fireTransform;

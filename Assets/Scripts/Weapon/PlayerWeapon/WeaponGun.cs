@@ -7,7 +7,8 @@ namespace TankBattle
     public class WeaponGun : Weapon
     {
         [Header("Attributes")]
-        [SerializeField] private float atackSpeed = 0.2f;
+        [SerializeField]
+        private float atackSpeed = 0.2f;
         [SerializeField] private float energyCost = 25f;
 
         private bool reload = false;
@@ -36,7 +37,7 @@ namespace TankBattle
 
         private void Fire()
         {
-            Instantiate(projectile).SetupProjectile(playerHandler.GetPlayerNumber(), playerHandler.GetPlayerVelocity(), fireTransform);
+            Instantiate(projectile).SetupProjectile(playerHandler.GetPlayerNumber(), playerHandler.GetPlayerVelocity(), fireTransform, new ProjectileModificators());
             reload = true;
         }
     }

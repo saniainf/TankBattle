@@ -16,9 +16,9 @@ namespace TankBattle
         [SerializeField]
         private ParticleSystem particleSystem;
 
-        public override void SetupProjectile(int playerNumber, float playerVelocity, Transform fireTransform)
+        public override void SetupProjectile(int playerNumber, float playerVelocity, Transform fireTransform, ProjectileModificators projectileModificators)
         {
-            base.SetupProjectile(playerNumber, playerVelocity, fireTransform);
+            base.SetupProjectile(playerNumber, playerVelocity, fireTransform, projectileModificators);
 
             if (weaponProjectile != null)
             {

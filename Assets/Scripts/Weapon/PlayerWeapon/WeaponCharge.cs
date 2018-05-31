@@ -11,7 +11,7 @@ namespace TankBattle
         [SerializeField]
         private float atackSpeed = 0.2f;
         [SerializeField] private float energyCost = 25f;
-        [SerializeField] private float minDamageMultiplier = 1.2f;
+        [SerializeField] private float minDamageMultiplier = 1.0f;
         [SerializeField] private float maxDamageMultiplier = 1.7f;
         [SerializeField] private float maxChargeTime = 0.75f;
 
@@ -59,7 +59,7 @@ namespace TankBattle
                 charge = true;
             }
 
-            if (charge)
+            if (charge && !reload)
             {
                 currentDamageMultiplier += chargeSpeed * Time.deltaTime;
 
@@ -73,7 +73,7 @@ namespace TankBattle
 
         public override void WeaponButtonRelease()
         {
-            if (charge)
+            if (charge && !reload)
             {
                 Fire();
             }
@@ -85,7 +85,11 @@ namespace TankBattle
             chargeEffect.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
             charge = false;
             reload = true;
-            Instantiate(projectile).SetupProjectile(playerHandler.GetPlayerNumber(), playerHandler.GetPlayerVelocity(), fireTransform);
+            ProjectileModificators projectileModificators = new ProjectileModificators()
+            {
+                { ProjectileModifierProperty.PROPERTY_DAMAGE_MULTIPLIER, currentDamageMultiplier }
+            };
+            Instantiate(projectile).SetupProjectile(playerHandler.GetPlayerNumber(), playerHandler.GetPlayerVelocity(), fireTransform, projectileModificators);
         }
     }
 }

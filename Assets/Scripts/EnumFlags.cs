@@ -29,4 +29,11 @@ namespace TankBattle
         PROJECTILE_IMPACT_NONE = 1 << 6,
         PROJECTILE_CHECK_IMPACT_ALONG = 1 << 7
     }
+
+    [Flags]
+    public enum ProjectileModifierProperty
+    {
+        PROPERTY_NONE = 1 << 0,
+        PROPERTY_DAMAGE_MULTIPLIER = 1 << 1
+    }
 }
