@@ -37,7 +37,7 @@ namespace TankBattle
 
         private void Fire()
         {
-            Instantiate(projectile).SetupProjectile(playerHandler.GetPlayerNumber(), playerHandler.GetPlayerVelocity(), fireTransform, new ProjectileModificators());
+            Instantiate(projectileSO).SetupProjectile(playerHandler.GetPlayerNumber(), playerHandler.GetPlayerVelocity(), fireTransform);
             reload = true;
         }
     }

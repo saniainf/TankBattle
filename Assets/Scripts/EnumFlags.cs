@@ -31,6 +31,14 @@ namespace TankBattle
     }
 
     [Flags]
+    public enum ProjectileCallback
+    {
+        PROJECTILE_CALLBACK_NONE = 1 << 0,
+        PROJECTILE_CALLBACK_FIXED = 1 << 1,
+        PROJECTILE_CALLBACK_ON_IMPACT = 1 << 2
+    }
+
+    [Flags]
     public enum ProjectileModifierProperty
     {
         PROPERTY_NONE = 1 << 0,

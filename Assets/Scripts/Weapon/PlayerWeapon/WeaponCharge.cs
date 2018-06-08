@@ -89,7 +89,7 @@ namespace TankBattle
             {
                 { ProjectileModifierProperty.PROPERTY_DAMAGE_MULTIPLIER, currentDamageMultiplier }
             };
-            Instantiate(projectile).SetupProjectile(playerHandler.GetPlayerNumber(), playerHandler.GetPlayerVelocity(), fireTransform, projectileModificators);
+            Instantiate(projectileSO).SetupProjectile(playerHandler.GetPlayerNumber(), playerHandler.GetPlayerVelocity(), fireTransform, projectileModificators);
         }
     }
 }

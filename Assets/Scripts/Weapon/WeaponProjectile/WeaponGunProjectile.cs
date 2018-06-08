@@ -20,11 +20,11 @@ namespace TankBattle
         {
             base.SetupProjectile(playerNumber, playerVelocity, fireTransform, projectileModificators);
 
-            if (weaponProjectile != null)
+            if (projectileInstance != null)
             {
-                Rigidbody rigidbody = weaponProjectile.GetComponent<Rigidbody>();
-                ProjectileBehaviour projectileBehaviour = weaponProjectile.GetComponent<ProjectileBehaviour>();
-                projectileBehaviour.m_WeaponProjectile = this;
+                Rigidbody rigidbody = projectileInstance.GetComponent<Rigidbody>();
+                ProjectileBehaviour projectileBehaviour = projectileInstance.GetComponent<ProjectileBehaviour>();
+                //projectileBehaviour.m_WeaponProjectile = this;
                 projectileBehaviour.m_ActiveLayers = activeLayers;
                 projectileBehaviour.m_ProjectileType = ProjectileType.PROJECTILE_COLLISON_ON_TRIGGER;
                 if (playerVelocity > 0)

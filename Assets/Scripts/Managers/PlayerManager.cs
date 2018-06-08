@@ -3,6 +3,10 @@ using UnityEngine;
 
 namespace TankBattle
 {
+    /// <summary>
+    /// Создание и стартовые настройки игрока
+    /// <para>Ссылка хранится в массиве в GameManager</para>
+    /// </summary>
     [Serializable]
     public class PlayerManager
     {

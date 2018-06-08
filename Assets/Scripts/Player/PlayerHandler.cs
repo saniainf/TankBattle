@@ -3,6 +3,10 @@ using UnityEngine.UI;
 
 namespace TankBattle
 {
+    /// <summary>
+    /// Основной handle игрока
+    /// <para>Лучше все взаимодействия компонентов делать через этот класс</para>
+    /// </summary>
     public class PlayerHandler : MonoBehaviour
     {
         [Header("PlayerComponents")]
@@ -15,6 +19,9 @@ namespace TankBattle
         [HideInInspector] public PlayerWeaponHandler m_PlayerWeaponHandler;
         [HideInInspector] public PlayerMovement m_Movement;
 
+        /// <summary>
+        /// Transform для оружия
+        /// </summary>
         [Header("PlayerWeapon")]
         public Transform m_WeaponTransform;
 
@@ -25,8 +32,6 @@ namespace TankBattle
         [SerializeField] private Image m_HealthSliderFillImage;
         [SerializeField] private Color m_FullHealthSliderColor = Color.green;
         [SerializeField] private Color m_ZeroHealthSliderColor = Color.red;
-
-        [HideInInspector] public GameObject CurrentWeapon;
 
         private void Awake()
         {
@@ -49,6 +54,9 @@ namespace TankBattle
                 OnDeath();
         }
 
+        /// <summary>
+        /// Сброс игрока в стартовое состояние
+        /// </summary>
         public void ResetPlayer()
         {
             m_PlayerAttributes.ResetAttributes();
@@ -56,6 +64,9 @@ namespace TankBattle
             ResetAbility();
         }
 
+        /// <summary>
+        /// Активация игрока и всех его компонентов
+        /// </summary>
         public void EnablePlayer()
         {
             inputController.enabled = true;
@@ -63,6 +74,9 @@ namespace TankBattle
             m_Rigidbody.isKinematic = false;
         }
 
+        /// <summary>
+        /// Деактивация игрока и всех его компонентов
+        /// </summary>
         public void DisablePlayer()
         {
             inputController.enabled = false;
@@ -70,16 +84,27 @@ namespace TankBattle
             m_Rigidbody.isKinematic = true;
         }
 
+        /// <summary>
+        /// Убрать оружие
+        /// </summary>
         public void ResetWeapon()
         {
             m_PlayerWeaponHandler.SetWeapon(Instantiate(m_PlayerAttributes.PlayerStartingWeapon));
         }
 
+        /// <summary>
+        /// Убрать способности
+        /// </summary>
         public void ResetAbility()
         {
             m_PlayerAbilityHandler.SetAbility(Instantiate(m_PlayerAttributes.PlayerStartingAbility));
         }
 
+        /// <summary>
+        /// Увеличить HealthPoint игрока
+        /// <para>Принимает отрицательные значения</para>
+        /// </summary>
+        /// <param name="plusHP">количество добавляемых HealthPoint</param>
         public void SetHealth(float plusHP)
         {
             m_PlayerAttributes.PlayerCurrentHealth = Mathf.Clamp(m_PlayerAttributes.PlayerCurrentHealth += plusHP, 0, m_PlayerAttributes.PlayerMaxHealth);
@@ -92,11 +117,20 @@ namespace TankBattle
             return m_PlayerAttributes.PlayerCurrentHealth;
         }
 
+        /// <summary>
+        /// Уменьшить HealthPoint игрока
+        /// </summary>
+        /// <param name="damage">количество отнимаемых HealthPoint</param>
         public void TakeDamage(float damage)
         {
             SetHealth(-damage);
         }
 
+        /// <summary>
+        /// Увеличить количество EnergyPoint игрока
+        /// <para>Принимает отрицательные значения</para>
+        /// </summary>
+        /// <param name="plusEP">количество добавляемых EnergyPoint</param>
         public void SetEnergy(float plusEP)
         {
             m_PlayerAttributes.PlayerCurrentEnergy = Mathf.Clamp(m_PlayerAttributes.PlayerCurrentEnergy += plusEP, 0, m_PlayerAttributes.PlayerMaxEnergy);

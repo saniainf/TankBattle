@@ -4,11 +4,18 @@ using UnityEngine;
 
 namespace TankBattle
 {
+    /// <summary>
+    /// Управление вооружением игрока
+    /// </summary>
     public class PlayerWeaponHandler : MonoBehaviour
     {
         [HideInInspector] public Weapon m_CurrentWeapon;
         [HideInInspector] public PlayerHandler m_PlayerHandler;
 
+        /// <summary>
+        /// Поменять оружие игрока
+        /// </summary>
+        /// <param name="weapon">оружие</param>
         public void SetWeapon(Weapon weapon)
         {
             if (m_CurrentWeapon != null)
