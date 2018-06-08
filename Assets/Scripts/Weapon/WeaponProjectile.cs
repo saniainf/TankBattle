@@ -16,6 +16,7 @@ namespace TankBattle
         protected int playerNumber;
         protected GameObject projectileInstance;
         protected Transform fireTransform;
+        protected ProjectileModificators projectileModificators;
 
         /// <summary>
         /// Конструктор снаряда
@@ -28,9 +29,10 @@ namespace TankBattle
         public virtual void SetupProjectile(int playerNumber, float playerVelocity, Transform fireTransform, ProjectileModificators projectileModificators = null)
         {
             if (projectileModificators == null)
-            {
-                projectileModificators = new ProjectileModificators() { { ProjectileModifierProperty.PROPERTY_NONE, 0f } };
-            }
+                this.projectileModificators = new ProjectileModificators() { { ProjectileModifierProperty.PROPERTY_NONE, 0f } };
+            else
+                this.projectileModificators = projectileModificators;
+
             this.playerNumber = playerNumber;
             this.fireTransform = fireTransform;
             if (projectilePrefab != null)
@@ -39,13 +41,9 @@ namespace TankBattle
             Destroy(this, maxLifeTime);
         }
 
-        public virtual void OnImpact(ProjectileBehaviour projectileBehaviour, Collider[] other) { }
-
-        public virtual void OnCollide(ProjectileBehaviour projectileBehaviour, Collider[] other) { }
-
         public virtual void ProjectileFixedUpdate(ProjectileBehaviour projectileBehaviour) { }
 
-        public virtual void ProjectileOnImpact(ProjectileBehaviour projectileBehaviour) { }
+        public virtual void ProjectileOnImpact(ProjectileBehaviour projectileBehaviour, Collider other) { }
 
         public virtual void RemoveProjectile()
         {

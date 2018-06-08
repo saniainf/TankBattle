@@ -14,54 +14,52 @@ namespace TankBattle
         [SerializeField] private LayerMask activeLayers;
         [Header("Effects")]
         [SerializeField]
-        private ParticleSystem particleSystem;
+        private ParticleSystem explosionEffect;
 
-        public override void SetupProjectile(int playerNumber, float playerVelocity, Transform fireTransform, ProjectileModificators projectileModificators)
+        public override void SetupProjectile(int playerNumber, float playerVelocity, Transform fireTransform, ProjectileModificators projectileModificators = null)
         {
             base.SetupProjectile(playerNumber, playerVelocity, fireTransform, projectileModificators);
 
             if (projectileInstance != null)
             {
-                Rigidbody rigidbody = projectileInstance.GetComponent<Rigidbody>();
-                ProjectileBehaviour projectileBehaviour = projectileInstance.GetComponent<ProjectileBehaviour>();
-                //projectileBehaviour.m_WeaponProjectile = this;
-                projectileBehaviour.m_ActiveLayers = activeLayers;
-                projectileBehaviour.m_ProjectileType = ProjectileType.PROJECTILE_COLLISON_ON_TRIGGER;
+                Vector3 projectileVelocity;
                 if (playerVelocity > 0)
-                    rigidbody.velocity = (startingSpeed + playerVelocity) * fireTransform.forward;
+                    projectileVelocity = (startingSpeed + playerVelocity) * fireTransform.forward;
                 else
-                    rigidbody.velocity = startingSpeed * fireTransform.forward;
+                    projectileVelocity = startingSpeed * fireTransform.forward;
+                ProjectileBehaviour projectileBehaviour = projectileInstance.GetComponent<ProjectileBehaviour>();
+
+                projectileBehaviour.SetupProjectileBehaviour(this, projectileVelocity, ProjectileCallback.PROJECTILE_CALLBACK_ON_IMPACT);
             }
         }
 
-        public override void OnCollide(ProjectileBehaviour projectileBehaviour, Collider[] other)
+        public override void ProjectileOnImpact(ProjectileBehaviour projectileBehaviour, Collider other)
         {
+            if (!activeLayers.HasLayer(other.gameObject.layer))
+                return;
+
             PlayerHandler otherPlayer;
             Rigidbody otherRigidBody;
 
-            for (int i = 0; i < other.Length; i++)
+            otherRigidBody = other.GetComponent<Rigidbody>();
+            if (otherRigidBody)
             {
-                otherRigidBody = other[i].GetComponent<Rigidbody>();
-                if (otherRigidBody)
-                {
-                    otherRigidBody.AddForce(projectileBehaviour.gameObject.transform.forward * explosionForce);
-                }
+                otherRigidBody.AddForce(projectileBehaviour.gameObject.transform.forward * explosionForce);
+            }
 
-                otherPlayer = other[i].GetComponent<PlayerHandler>();
-                if (otherPlayer)
+            otherPlayer = other.GetComponent<PlayerHandler>();
+            if (otherPlayer)
+            {
+                if (otherPlayer.GetPlayerNumber() != playerNumber)
                 {
-                    if (otherPlayer.GetPlayerNumber() != playerNumber)
-                    {
-                        Debug.Log("impact" + otherPlayer.GetPlayerNumber());
-                        otherPlayer.TakeDamage(Random.Range(minDamage, maxDamage));
-                    }
+                    otherPlayer.TakeDamage(Random.Range(minDamage, maxDamage));
                 }
             }
 
-            particleSystem = Instantiate(particleSystem, projectileBehaviour.gameObject.transform);
-            particleSystem.gameObject.transform.parent = null;
-            particleSystem.Play();
-            Destroy(particleSystem.gameObject, particleSystem.main.duration);
+            ParticleSystem particle = Instantiate(explosionEffect, projectileBehaviour.gameObject.transform);
+            particle.gameObject.transform.parent = null;
+            particle.Play();
+            Destroy(particle.gameObject, particle.main.duration);
 
             RemoveProjectile();
         }

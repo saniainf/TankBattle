@@ -81,7 +81,6 @@ namespace TankBattle
 
         private void Fire()
         {
-            // TODO добавить мультиплер к урону
             chargeEffect.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
             charge = false;
             reload = true;
